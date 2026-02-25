@@ -1,0 +1,27 @@
+# Xcode
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/swpm/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+.build/
+.swiftpm/
+xcuserdata/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Build
+*.moved-aside
+*.hmap
+*.ipa
+*.xcarchive
+
+# OS
+.DS_Store
+.Spotlight-V100
+.Trashes
