@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -39,6 +39,7 @@
 		7E6BBDB12233A9D2CDEE71BB /* WellnessMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923E341A7D99084436F74118 /* WellnessMetrics.swift */; };
 		8174A35DE8B9D9FDABEB4AFD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72C69D0848ACEE69F8C3A81 /* SettingsView.swift */; };
 		8B4748B662A642D203B4F0CC /* HRVWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7545688004EE2E2B5AC202A1 /* HRVWidget.swift */; };
+		9072E2780CFDD1CFC30EFAAF /* DataExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD94F88EE6C3DB6C8238A15 /* DataExportService.swift */; };
 		91B00CB3F3F976EDDBB790D5 /* StoreKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF2F3082CF8178F30E37580 /* StoreKitService.swift */; };
 		93CF37CA4F144DFA51134E00 /* ActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6031EE96CB0DDBBCF4D62F31 /* ActionsViewModel.swift */; };
 		961560F263CA8EE2330A7419 /* MoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEC217930505392DE57CB10 /* MoodView.swift */; };
@@ -102,6 +103,7 @@
 		23035F1908CA54BC53CB73B7 /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		2400C5947AE436A6594D2DE7 /* SleepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepViewModel.swift; sourceTree = "<group>"; };
 		244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupStore.swift; sourceTree = "<group>"; };
+		2FD94F88EE6C3DB6C8238A15 /* DataExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportService.swift; sourceTree = "<group>"; };
 		356D4D14CA6F023CAB287BB5 /* MetricCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCardView.swift; sourceTree = "<group>"; };
 		3CEC217930505392DE57CB10 /* MoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodView.swift; sourceTree = "<group>"; };
 		45E70F72C243359163C62BD6 /* CalmDownWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmDownWidgetsBundle.swift; sourceTree = "<group>"; };
@@ -110,7 +112,7 @@
 		4DBCD608361B9B73AAD0B451 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		4E9D50502F7ED4D9715B1198 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		4FE251FF6BF705A87B9CF7E7 /* StressLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressLevel.swift; sourceTree = "<group>"; };
-		52790F4E13A0AC9285AD632E /* CalmDown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalmDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		52790F4E13A0AC9285AD632E /* CalmDown.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CalmDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55B83A5D93F5E12C12A230A3 /* WatchFacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFacesView.swift; sourceTree = "<group>"; };
 		573DCE118F3D7040454C4DD8 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		57BFAB68AB4281EEAA9D224F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -130,7 +132,7 @@
 		86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataStore.swift; sourceTree = "<group>"; };
 		8B09C9FC04FFC407EDD16E93 /* SleepWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepWidget.swift; sourceTree = "<group>"; };
 		8E533C149453AC5467679A6F /* TrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewModel.swift; sourceTree = "<group>"; };
-		91134BB5C74DB7A1C18A16DD /* CalmDownWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CalmDownWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		91134BB5C74DB7A1C18A16DD /* CalmDownWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = CalmDownWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		923E341A7D99084436F74118 /* WellnessMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessMetrics.swift; sourceTree = "<group>"; };
 		A8D4EA7B309339ADDA25CF6D /* HRVReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVReading.swift; sourceTree = "<group>"; };
 		A993B414031DDF900FA22180 /* HRVChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVChartView.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */,
+				2FD94F88EE6C3DB6C8238A15 /* DataExportService.swift */,
 				7121632CB96DF5527AB5940D /* HealthKitService.swift */,
 				7B7F77A9F661C8E4A313C1CD /* HRVAnalysisService.swift */,
 				74EBC76893D8B77BD6203372 /* NotificationService.swift */,
@@ -534,6 +537,7 @@
 			);
 			mainGroup = E6DF86652FB22F3E81573CE8;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -572,6 +576,7 @@
 				2449D63C90813B8589BF2C29 /* ColorPalette.swift in Sources */,
 				CEC1391DDE2FFF1F737E4992 /* DashboardView.swift in Sources */,
 				61DB94AA4448362F77696568 /* DashboardViewModel.swift in Sources */,
+				9072E2780CFDD1CFC30EFAAF /* DataExportService.swift in Sources */,
 				E08DA18441FE9EE426B5B183 /* Date+Helpers.swift in Sources */,
 				0F827F9D036AABC67E134B0A /* HRVAnalysisService.swift in Sources */,
 				63ECAC26FC18F67D0404A2D4 /* HRVChartView.swift in Sources */,
@@ -712,7 +717,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calmdown.app.watchkitapp;
 				SDKROOT = watchos;
@@ -787,7 +791,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calmdown.app.watchkitapp;
 				SDKROOT = watchos;
@@ -806,7 +809,6 @@
 				CODE_SIGN_ENTITLEMENTS = CalmDown/CalmDown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDown/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -825,7 +827,6 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -848,7 +849,6 @@
 				CODE_SIGN_ENTITLEMENTS = CalmDown/CalmDown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDown/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -867,7 +867,6 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

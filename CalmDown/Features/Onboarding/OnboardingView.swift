@@ -1,6 +1,8 @@
 import SwiftUI
 import AuthenticationServices
 import HealthKit
+import SwiftData
+import UniformTypeIdentifiers
 
 // MARK: - Root gate
 // Shows onboarding on first launch; MainTabView thereafter.
@@ -21,11 +23,19 @@ struct OnboardingView: View {
     @AppStorage("onboardingComplete") private var onboardingComplete = false
     @AppStorage("userName")           private var userName           = ""
 
+    @Environment(\.modelContext) private var modelContext
+
     @State private var page = 0
     @State private var nameInput = ""
     @State private var healthGranted = false
     @State private var signedInWithApple = false
     @State private var isRequestingHealth = false
+
+    // Restore from backup
+    @State private var showRestorePicker  = false
+    @State private var restoreResult: ImportResult? = nil
+    @State private var showRestoreResult  = false
+    @State private var restoreError: String? = nil
 
     private let healthKit = HealthKitService.shared
     private let totalPages = 4
@@ -248,7 +258,36 @@ struct OnboardingView: View {
             }
             .buttonStyle(OnboardingPrimaryButton())
             .padding(.horizontal, Spacing.xl)
+
+            // Restore from backup option
+            Button {
+                showRestorePicker = true
+            } label: {
+                Label("Restore from backup file", systemImage: "square.and.arrow.down")
+                    .font(.calmCaption)
+                    .foregroundStyle(Color.calmBlue.opacity(0.8))
+            }
             .padding(.bottom, Spacing.xl)
+        }
+        .fileImporter(
+            isPresented: $showRestorePicker,
+            allowedContentTypes: [UTType.json],
+            allowsMultipleSelection: false
+        ) { result in
+            handleRestore(result: result)
+        }
+        .alert("Data Restored", isPresented: $showRestoreResult) {
+            Button("Continue") { finishOnboarding() }
+        } message: {
+            Text(restoreResult?.summary ?? "")
+        }
+        .alert("Restore Failed", isPresented: .init(
+            get: { restoreError != nil },
+            set: { if !$0 { restoreError = nil } }
+        )) {
+            Button("OK") {}
+        } message: {
+            Text(restoreError ?? "")
         }
     }
 
@@ -279,6 +318,28 @@ struct OnboardingView: View {
             signedInWithApple = true
         case .failure(let error):
             print("Apple Sign In failed:", error)
+        }
+    }
+
+    private func handleRestore(result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            _ = url.startAccessingSecurityScopedResource()
+            defer { url.stopAccessingSecurityScopedResource() }
+            do {
+                let res = try DataExportService.importFromURL(url, context: modelContext)
+                restoreResult    = res
+                showRestoreResult = true
+                // Pre-fill name if restored
+                if let name = UserDefaults.standard.string(forKey: "userName"), !name.isEmpty {
+                    nameInput = name
+                }
+            } catch {
+                restoreError = "Could not read backup: \(error.localizedDescription)"
+            }
+        case .failure(let error):
+            restoreError = error.localizedDescription
         }
     }
 
