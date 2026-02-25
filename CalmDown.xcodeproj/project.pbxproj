@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -110,7 +110,7 @@
 		4DBCD608361B9B73AAD0B451 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		4E9D50502F7ED4D9715B1198 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		4FE251FF6BF705A87B9CF7E7 /* StressLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressLevel.swift; sourceTree = "<group>"; };
-		52790F4E13A0AC9285AD632E /* CalmDown.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CalmDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		52790F4E13A0AC9285AD632E /* CalmDown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalmDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55B83A5D93F5E12C12A230A3 /* WatchFacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFacesView.swift; sourceTree = "<group>"; };
 		573DCE118F3D7040454C4DD8 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		57BFAB68AB4281EEAA9D224F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -130,7 +130,7 @@
 		86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataStore.swift; sourceTree = "<group>"; };
 		8B09C9FC04FFC407EDD16E93 /* SleepWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepWidget.swift; sourceTree = "<group>"; };
 		8E533C149453AC5467679A6F /* TrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewModel.swift; sourceTree = "<group>"; };
-		91134BB5C74DB7A1C18A16DD /* CalmDownWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = CalmDownWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		91134BB5C74DB7A1C18A16DD /* CalmDownWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CalmDownWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		923E341A7D99084436F74118 /* WellnessMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessMetrics.swift; sourceTree = "<group>"; };
 		A8D4EA7B309339ADDA25CF6D /* HRVReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVReading.swift; sourceTree = "<group>"; };
 		A993B414031DDF900FA22180 /* HRVChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVChartView.swift; sourceTree = "<group>"; };
@@ -534,7 +534,6 @@
 			);
 			mainGroup = E6DF86652FB22F3E81573CE8;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -713,6 +712,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calmdown.app.watchkitapp;
 				SDKROOT = watchos;
@@ -787,6 +787,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calmdown.app.watchkitapp;
 				SDKROOT = watchos;
@@ -805,6 +806,7 @@
 				CODE_SIGN_ENTITLEMENTS = CalmDown/CalmDown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDown/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -823,6 +825,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -845,6 +848,7 @@
 				CODE_SIGN_ENTITLEMENTS = CalmDown/CalmDown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDown/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -863,6 +867,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KXA2QSDQ72;
 				INFOPLIST_FILE = CalmDownWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

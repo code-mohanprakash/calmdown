@@ -35,6 +35,7 @@ struct MoodView: View {
             .padding(.horizontal, Spacing.md)
             .padding(.top, Spacing.lg)
         }
+        .background(Color.calmLightBlue.ignoresSafeArea())
         .animation(.spring(response: 0.4), value: vm.selectedEmotions.isEmpty)
         .onAppear { vm.loadTodayTotals(context: modelContext) }
     }

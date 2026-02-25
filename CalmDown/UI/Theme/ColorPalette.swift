@@ -2,16 +2,16 @@ import SwiftUI
 
 extension Color {
     // Brand — Blue primary theme
-    static let calmMint       = Color(hex: "#A8C8F5")   // Primary soft blue (was mint green)
+    static let calmMint       = Color(hex: "#A8C8F5")   // Primary soft blue
     static let calmBlue       = Color(hex: "#2979FF")   // Strong blue — tab tint & CTAs
     static let calmPink       = Color(hex: "#F4A8B5")   // Secondary
     static let calmLavender   = Color(hex: "#C4A8D5")   // Tertiary
-    static let calmNavy       = Color(hex: "#1A1F3A")   // Dark BG
-    static let calmDeepGreen  = Color(hex: "#1A3872")   // Watch/Breathing BG (deep navy blue)
-    static let calmCream      = Color(hex: "#F8F9FA")   // Light BG
+    static let calmNavy       = Color(hex: "#1A1F3A")   // Dark BG (sleep)
+    static let calmDeepGreen  = Color(hex: "#1A3872")   // Watch/Breathing deep navy
+    static let calmCream      = Color(hex: "#EAF5FF")   // Warm soft sky blue — primary app background
     static let calmCoral      = Color(hex: "#FF7F7F")   // Accent
-    static let calmLightGreen = Color(hex: "#E8F4FD")   // Light blue BG (replaces light green)
-    static let calmLightBlue  = Color(hex: "#E3F2FD")   // Light blue BG
+    static let calmLightGreen = Color(hex: "#EAF5FF")   // Warm soft sky blue (unified with calmCream)
+    static let calmLightBlue  = Color(hex: "#EAF5FF")   // Warm soft sky blue (unified)
     static let calmLightPink  = Color(hex: "#FCE4EC")   // Light pink BG
 
     // Stress Level Colors
