@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ActionsView: View {
     @StateObject private var vm = ActionsViewModel()
+    @State private var showingSleep = false
 
     var body: some View {
         NavigationStack {
@@ -10,8 +11,8 @@ struct ActionsView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: Spacing.md) {
-                        // Sleep card (full width)
-                        SleepMetricCard(sleep: vm.sleep)
+                        // Sleep card (full width) — tappable
+                        SleepMetricCard(sleep: vm.sleep, onTap: { showingSleep = true })
 
                         // Fitness (full width)
                         FitnessMetricCard(
@@ -66,6 +67,7 @@ struct ActionsView: View {
             .navigationBarTitleDisplayMode(.large)
         }
         .task { await vm.loadData() }
+        .sheet(isPresented: $showingSleep) { SleepView() }
     }
 }
 

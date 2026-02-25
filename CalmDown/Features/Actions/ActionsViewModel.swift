@@ -10,6 +10,7 @@ final class ActionsViewModel: ObservableObject {
 
     func loadData() async {
         isLoading = true
+        try? await healthKit.requestAuthorization()
         await fetchMetrics()
         isLoading = false
     }

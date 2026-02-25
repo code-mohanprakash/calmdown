@@ -38,6 +38,7 @@ struct MetricCardView: View {
 // MARK: - Specific metric cards
 struct SleepMetricCard: View {
     let sleep: SleepData
+    var onTap: (() -> Void)? = nil
 
     var body: some View {
         MetricCardView(
@@ -62,7 +63,8 @@ struct SleepMetricCard: View {
                     }
                     RingProgressView(progress: Double(sleep.quality.score) / 100, color: .calmLavender, lineWidth: 6, size: 44)
                 }
-            )
+            ),
+            onTap: onTap
         )
     }
 }
@@ -81,7 +83,7 @@ struct FitnessMetricCard: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Move").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text("\(Int(calories))SAL").font(.calmMetricSM).foregroundStyle(Color.calmCoral)
+                        Text("\(Int(calories))CAL").font(.calmMetricSM).foregroundStyle(Color.calmCoral)
                     }
                     Spacer()
                     VStack(alignment: .leading, spacing: 2) {

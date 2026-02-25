@@ -28,7 +28,7 @@ struct BreathingView: View {
                         Text("Breathing Exercise")
                             .font(.calmHeadline)
                             .foregroundStyle(.white)
-                        Text("Session \(vm.sessionCount)/\(vm.totalSessions)")
+                        Text("Cycle \(vm.sessionCount) of \(vm.totalSessions)")
                             .font(.calmCaption)
                             .foregroundStyle(.white.opacity(0.7))
                     }
@@ -45,7 +45,7 @@ struct BreathingView: View {
                 Spacer()
 
                 // Breathing circle
-                BreathingCircleView(phase: $vm.currentPhase, isPremium: true)
+                BreathingCircleView(phase: $vm.currentPhase)
 
                 // Timer
                 Text(vm.timerString)

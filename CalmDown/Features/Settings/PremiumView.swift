@@ -2,7 +2,7 @@ import SwiftUI
 import StoreKit
 
 struct PremiumView: View {
-    @StateObject private var storeKit = StoreKitService.shared
+    @EnvironmentObject private var storeKit: StoreKitService
     @State private var selectedProduct: Product?
     @Environment(\.dismiss) private var dismiss
 
@@ -163,7 +163,7 @@ struct PremiumView: View {
                     _ = try? await storeKit.purchase(product)
                 }
             } label: {
-                Text("Start Free Trial")
+                Text(selectedProduct?.subscription?.introductoryOffer != nil ? "Start Free Trial" : "Subscribe Now")
                     .font(.calmHeadline)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)

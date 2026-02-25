@@ -15,6 +15,7 @@
 		1BB2F4A4B6415D7C5A6A3089 /* HRVReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D4EA7B309339ADDA25CF6D /* HRVReading.swift */; };
 		1E0C028C31FDB1D08CA67603 /* SleepData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B502ACE00B03E4C4EE86A3B5 /* SleepData.swift */; };
 		2449D63C90813B8589BF2C29 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662DB7FBC79A4F2182486A25 /* ColorPalette.swift */; };
+		286C5F6E06C3D56F2AA3FDB3 /* AppGroupStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */; };
 		2C0A8522C890EAC0F1F6CF92 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D614BCD940B5279BDD6312 /* Color+Hex.swift */; };
 		2EC0E7DE3146566623C2632A /* WatchShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C8E0460DB5B2351B804187 /* WatchShared.swift */; };
 		321BBDBEB061419F280B6B41 /* WatchFacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B83A5D93F5E12C12A230A3 /* WatchFacesView.swift */; };
@@ -41,6 +42,7 @@
 		93CF37CA4F144DFA51134E00 /* ActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6031EE96CB0DDBBCF4D62F31 /* ActionsViewModel.swift */; };
 		961560F263CA8EE2330A7419 /* MoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEC217930505392DE57CB10 /* MoodView.swift */; };
 		9D37C9881A150F1F80156C2D /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA56A5ECE2C92B9392CD31A /* Spacing.swift */; };
+		A1CF019811B74DF588CC1D1D /* WidgetDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */; };
 		A77C99F61A1EAD87BBCD047B /* WatchDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573DCE118F3D7040454C4DD8 /* WatchDashboardView.swift */; };
 		AB99D378F1353220B500C0D9 /* WatchBreathingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CA0B046AA44D02C42529A /* WatchBreathingView.swift */; };
 		B09B57BE29AF83152E6678CE /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53BAB87580237BE3BB28AF3 /* PremiumView.swift */; };
@@ -98,6 +100,7 @@
 		21766AD858D353E0DA33E5CA /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		23035F1908CA54BC53CB73B7 /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		2400C5947AE436A6594D2DE7 /* SleepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepViewModel.swift; sourceTree = "<group>"; };
+		244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupStore.swift; sourceTree = "<group>"; };
 		356D4D14CA6F023CAB287BB5 /* MetricCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCardView.swift; sourceTree = "<group>"; };
 		3CEC217930505392DE57CB10 /* MoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodView.swift; sourceTree = "<group>"; };
 		45E70F72C243359163C62BD6 /* CalmDownWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmDownWidgetsBundle.swift; sourceTree = "<group>"; };
@@ -123,6 +126,7 @@
 		7B7F77A9F661C8E4A313C1CD /* HRVAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVAnalysisService.swift; sourceTree = "<group>"; };
 		7C0C5F5C5F382AD3C7B3E29E /* CalmDown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CalmDown.entitlements; sourceTree = "<group>"; };
 		82637BDB696B5644977136C1 /* LiquidGlassModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassModifier.swift; sourceTree = "<group>"; };
+		86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataStore.swift; sourceTree = "<group>"; };
 		8B09C9FC04FFC407EDD16E93 /* SleepWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepWidget.swift; sourceTree = "<group>"; };
 		8E533C149453AC5467679A6F /* TrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewModel.swift; sourceTree = "<group>"; };
 		91134BB5C74DB7A1C18A16DD /* CalmDownWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = CalmDownWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +205,7 @@
 				8B09C9FC04FFC407EDD16E93 /* SleepWidget.swift */,
 				D483C5524D46C3A03228EEFF /* StressWidget.swift */,
 				1F3BC3013AE0377355F463F7 /* WidgetColorExtension.swift */,
+				86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */,
 			);
 			path = CalmDownWidgets;
 			sourceTree = "<group>";
@@ -247,6 +252,7 @@
 		4BCED3980F40310213BA393C /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */,
 				7121632CB96DF5527AB5940D /* HealthKitService.swift */,
 				7B7F77A9F661C8E4A313C1CD /* HRVAnalysisService.swift */,
 				74EBC76893D8B77BD6203372 /* NotificationService.swift */,
@@ -546,6 +552,7 @@
 			files = (
 				5BF645BC2EEEFD535770F70C /* ActionsView.swift in Sources */,
 				93CF37CA4F144DFA51134E00 /* ActionsViewModel.swift in Sources */,
+				286C5F6E06C3D56F2AA3FDB3 /* AppGroupStore.swift in Sources */,
 				E7BCF0B27C405A48D9FFD2EA /* BreathingAnimation.swift in Sources */,
 				487173D3B7A24DF09DE9BC19 /* BreathingView.swift in Sources */,
 				044DE853EB46875FA0C594D2 /* CalmDownApp.swift in Sources */,
@@ -609,6 +616,7 @@
 				CBCA76A02FCDA807DCDC1FD1 /* SleepWidget.swift in Sources */,
 				440B417955ABDB0141632F0A /* StressWidget.swift in Sources */,
 				15A3679BBBD960EC83982FBA /* WidgetColorExtension.swift in Sources */,
+				A1CF019811B74DF588CC1D1D /* WidgetDataStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

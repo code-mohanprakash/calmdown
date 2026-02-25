@@ -3,23 +3,39 @@ import SwiftData
 
 @MainActor
 final class TrackingViewModel: ObservableObject {
-    @Published var todayWaterMl:   Int = 1000
-    @Published var todayCaffeineMg: Int = 20
+    @Published var todayWaterMl:    Int = 0
+    @Published var todayCaffeineMg: Int = 0
     @Published var selectedEmotions: Set<String> = []
-    @Published var todayMoods: [MoodEntry] = []
 
     let waterGoalMl    = 2000
     let caffeineGoalMg = 400
 
     var waterProgress: Double { Double(todayWaterMl) / Double(waterGoalMl) }
 
+    // MARK: - Load today's totals
+    func loadTodayTotals(context: ModelContext) {
+        let today      = Calendar.current.startOfDay(for: Date())
+        let descriptor = FetchDescriptor<HydrationEntry>(
+            predicate: #Predicate { $0.timestamp >= today }
+        )
+        let entries = (try? context.fetch(descriptor)) ?? []
+        todayWaterMl    = entries.reduce(0) { $0 + $1.waterMl }
+        todayCaffeineMg = entries.reduce(0) { $0 + $1.caffeineMg }
+    }
+
     // MARK: - Water
-    func addWater(_ ml: Int) {
-        todayWaterMl = min(todayWaterMl + ml, waterGoalMl * 2)
+    func addWater(_ ml: Int, context: ModelContext) {
+        let entry = HydrationEntry(waterMl: ml, caffeineMg: 0)
+        context.insert(entry)
+        try? context.save()
+        todayWaterMl += ml
     }
 
     // MARK: - Caffeine
-    func addCaffeine(_ mg: Int) {
+    func addCaffeine(_ mg: Int, context: ModelContext) {
+        let entry = HydrationEntry(waterMl: 0, caffeineMg: mg)
+        context.insert(entry)
+        try? context.save()
         todayCaffeineMg += mg
     }
 

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var vm     = SettingsViewModel()
-    @StateObject private var storeKit = StoreKitService.shared
+    @StateObject private var vm = SettingsViewModel()
+    @EnvironmentObject private var storeKit: StoreKitService
 
     var body: some View {
         NavigationStack {

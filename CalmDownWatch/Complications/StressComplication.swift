@@ -10,10 +10,8 @@ final class ComplicationController: NSObject, CLKComplicationDataSource {
                 identifier: "HRVComplication",
                 displayName: "HRV Stress",
                 supportedFamilies: [
-                    .modularSmall,
                     .graphicCorner,
                     .graphicCircular,
-                    .graphicBezel,
                 ]
             )
         ]
@@ -70,7 +68,7 @@ struct HRVComplicationView: View {
     var stressColor: Color {
         switch stress {
         case "Great":    return .green
-        case "Good":     return Color(hex: "#8BC34A")
+        case "Good":     return Color(red: 0.545, green: 0.765, blue: 0.290)
         case "Normal":   return .yellow
         case "High":     return .orange
         default:         return .red

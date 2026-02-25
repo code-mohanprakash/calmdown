@@ -4,7 +4,9 @@ import SwiftUI
 struct CalmDownWatchApp: App {
     var body: some Scene {
         WindowGroup {
-            WatchDashboardView()
+            NavigationStack {
+                WatchDashboardView()
+            }
         }
     }
 }

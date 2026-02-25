@@ -11,7 +11,10 @@ struct StressWidgetProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StressEntry>) -> Void) {
-        let entry = placeholder(in: context)
+        let stress = WidgetDataStore.stress
+        let hrv    = WidgetDataStore.hrv
+        let color  = WidgetDataStore.stressColor
+        let entry  = StressEntry(date: Date(), stressLevel: stress, hrv: hrv > 0 ? hrv : 35, color: color)
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }

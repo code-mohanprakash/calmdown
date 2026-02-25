@@ -12,10 +12,12 @@ struct HRVWidgetProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<HRVWidgetEntry>) -> Void) {
-        let entry  = placeholder(in: context)
+        let hrv    = WidgetDataStore.hrv
+        let stress = WidgetDataStore.stress
+        let color  = WidgetDataStore.stressColor
+        let entry  = HRVWidgetEntry(date: Date(), hrv: hrv > 0 ? hrv : 51, stress: stress, stressColor: color)
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-        completion(timeline)
+        completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
 }
 

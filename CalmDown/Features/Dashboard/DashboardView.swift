@@ -3,6 +3,8 @@ import SwiftUI
 struct DashboardView: View {
     @StateObject private var vm = DashboardViewModel()
     @State private var showingSleepDetail = false
+    @State private var showingWatchFaces  = false
+    @AppStorage("userName") private var userName = "Alex"
 
     var body: some View {
         NavigationStack {
@@ -39,6 +41,14 @@ struct DashboardView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showingWatchFaces = true
+                    } label: {
+                        Image(systemName: "applewatch")
+                            .foregroundStyle(Color.calmMint)
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingSleepDetail = true
@@ -53,12 +63,15 @@ struct DashboardView: View {
         .sheet(isPresented: $showingSleepDetail) {
             SleepView()
         }
+        .sheet(isPresented: $showingWatchFaces) {
+            WatchFacesView()
+        }
     }
 
     // MARK: - Header
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Hi \(vm.userName),")
+            Text("Hi \(userName),")
                 .font(.calmTitle3)
                 .foregroundStyle(.secondary)
             Text("here's your daily score")

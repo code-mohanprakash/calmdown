@@ -11,9 +11,6 @@ struct MoodView: View {
                 // Water section
                 waterSection
 
-                // Caffeine section
-                caffeineSection
-
                 // Emotions grid
                 emotionsSection
 
@@ -39,6 +36,7 @@ struct MoodView: View {
             .padding(.top, Spacing.lg)
         }
         .animation(.spring(response: 0.4), value: vm.selectedEmotions.isEmpty)
+        .onAppear { vm.loadTodayTotals(context: modelContext) }
     }
 
     // MARK: - Water
@@ -55,7 +53,7 @@ struct MoodView: View {
                 }
                 waterWaveIcon
                 Button {
-                    withAnimation(.spring()) { vm.addWater(100) }
+                    withAnimation(.spring()) { vm.addWater(100, context: modelContext) }
                 } label: {
                     Label("+100", systemImage: "plus")
                         .font(.calmCaption)
@@ -81,7 +79,7 @@ struct MoodView: View {
                 }
                 coffeeIcon
                 Button {
-                    withAnimation(.spring()) { vm.addCaffeine(100) }
+                    withAnimation(.spring()) { vm.addCaffeine(100, context: modelContext) }
                 } label: {
                     Label("+100", systemImage: "plus")
                         .font(.calmCaption)

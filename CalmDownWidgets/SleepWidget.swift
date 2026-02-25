@@ -11,7 +11,9 @@ struct SleepWidgetProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SleepWidgetEntry>) -> Void) {
-        let entry = placeholder(in: context)
+        let duration = WidgetDataStore.sleepDuration
+        let quality  = WidgetDataStore.sleepQuality
+        let entry    = SleepWidgetEntry(date: Date(), duration: duration, quality: quality)
         let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: Date()) ?? Date()
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }

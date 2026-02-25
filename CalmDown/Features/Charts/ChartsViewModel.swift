@@ -22,6 +22,7 @@ final class ChartsViewModel: ObservableObject {
     func loadData() async {
         isLoading = true
         loadMockData()
+        try? await healthKit.requestAuthorization()
 
         let days: Int
         switch selectedPeriod {

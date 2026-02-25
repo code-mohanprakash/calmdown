@@ -40,13 +40,19 @@ struct WatchDashboardView: View {
                     .frame(width: 120, height: 8)
                     .padding(.horizontal, 12)
 
-                // Time reading
-                Text(timeString)
-                    .font(.system(size: 11))
-                    .foregroundStyle(.white.opacity(0.5))
             }
         }
         .onAppear { isPulsing = true }
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                NavigationLink {
+                    WatchBreathingView()
+                } label: {
+                    Label("Breathe", systemImage: "wind")
+                        .font(.system(size: 11))
+                }
+            }
+        }
     }
 
     var timeString: String {

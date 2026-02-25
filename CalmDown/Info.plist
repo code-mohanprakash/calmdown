@@ -20,24 +20,10 @@
     <string>1</string>
     <key>NSHealthShareUsageDescription</key>
     <string>CalmDown uses your health data to track stress levels, HRV, sleep quality, and wellness metrics so you can understand and reduce stress.</string>
-    <key>NSHealthUpdateUsageDescription</key>
-    <string>CalmDown saves mindfulness session data to Apple Health to track your wellness progress.</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
-        <true/>
-        <key>UISceneConfigurations</key>
-        <dict>
-            <key>UIWindowSceneSessionRoleApplication</key>
-            <array>
-                <dict>
-                    <key>UISceneConfigurationName</key>
-                    <string>Default Configuration</string>
-                    <key>UISceneDelegateClassName</key>
-                    <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-                </dict>
-            </array>
-        </dict>
+        <false/>
     </dict>
     <key>UILaunchScreen</key>
     <dict/>

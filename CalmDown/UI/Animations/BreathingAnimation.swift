@@ -2,7 +2,6 @@ import SwiftUI
 
 struct BreathingCircleView: View {
     @Binding var phase: BreathingPhase
-    let isPremium: Bool
 
     @State private var scale:   CGFloat = 1.0
     @State private var opacity: Double  = 0.6
@@ -124,6 +123,6 @@ enum BreathingPhase: CaseIterable {
     @Previewable @State var phase = BreathingPhase.breatheIn
     ZStack {
         Color.calmNavy.ignoresSafeArea()
-        BreathingCircleView(phase: $phase, isPremium: true)
+        BreathingCircleView(phase: $phase)
     }
 }

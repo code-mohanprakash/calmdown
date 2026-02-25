@@ -40,6 +40,7 @@ final class DashboardViewModel: ObservableObject {
             if realHRV > 0 {
                 currentHRV  = realHRV
                 stressLevel = StressLevel.from(hrv: realHRV)
+                AppGroupStore.saveHRV(realHRV, stress: stressLevel.rawValue)
             }
             if realHR > 0 { heartRate = realHR }
             if !readings24h.isEmpty { hrvReadings = readings24h }

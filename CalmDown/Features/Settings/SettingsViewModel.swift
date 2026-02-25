@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UserNotifications
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
@@ -7,10 +8,27 @@ final class SettingsViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(userName, forKey: "userName") }
     }
     @Published var stressAlertsEnabled: Bool {
-        didSet { UserDefaults.standard.set(stressAlertsEnabled, forKey: "stressAlerts") }
+        didSet {
+            UserDefaults.standard.set(stressAlertsEnabled, forKey: "stressAlerts")
+            if stressAlertsEnabled {
+                Task { await NotificationService.shared.requestPermission() }
+            }
+        }
     }
     @Published var hydrationRemindersEnabled: Bool {
-        didSet { UserDefaults.standard.set(hydrationRemindersEnabled, forKey: "hydrationReminders") }
+        didSet {
+            UserDefaults.standard.set(hydrationRemindersEnabled, forKey: "hydrationReminders")
+            if hydrationRemindersEnabled {
+                Task { await NotificationService.shared.requestPermission() }
+                NotificationService.shared.scheduleHydrationReminder(atHour: 10)
+                NotificationService.shared.scheduleHydrationReminder(atHour: 14)
+                NotificationService.shared.scheduleHydrationReminder(atHour: 18)
+            } else {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(
+                    withIdentifiers: ["hydration-10", "hydration-14", "hydration-18"]
+                )
+            }
+        }
     }
     @Published var selectedTheme: AppTheme {
         didSet { UserDefaults.standard.set(selectedTheme.rawValue, forKey: "appTheme") }

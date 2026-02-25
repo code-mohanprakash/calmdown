@@ -35,10 +35,6 @@ struct SleepView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Settings") { }
-                        .foregroundStyle(.white.opacity(0.7))
-                }
                 ToolbarItem(placement: .topBarLeading) {
                     Button { dismiss() } label: {
                         Image(systemName: "xmark.circle.fill")

@@ -11,6 +11,7 @@ final class SleepViewModel: ObservableObject {
     func loadData() async {
         isLoading = true
         loadMockData()
+        try? await healthKit.requestAuthorization()
 
         if let real = await healthKit.fetchLastNightSleep() {
             sleepData = real
