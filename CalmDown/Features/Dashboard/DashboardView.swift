@@ -11,7 +11,7 @@ struct DashboardView: View {
             ZStack {
                 // Background gradient
                 LinearGradient(
-                    colors: [Color.calmLightGreen, Color.calmCream],
+                    colors: [Color.calmLightBlue, Color.calmCream],
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -87,22 +87,37 @@ struct DashboardView: View {
             MrFizzView(stressLevel: vm.stressLevel, size: 180)
                 .padding(.top, Spacing.sm)
 
-            // Status label
-            HStack(spacing: Spacing.sm) {
-                Text(vm.stressLevel.rawValue)
-                    .font(.calmTitle2)
-                    .foregroundStyle(vm.stressLevel.color)
-                Text("·")
-                    .foregroundStyle(.secondary)
-                Text("\(Int(vm.currentHRV))ms")
-                    .font(.calmTitle2)
-                    .foregroundStyle(.primary)
+            if vm.isLoading {
+                ProgressView()
+                    .tint(Color.calmBlue)
+                    .padding(.vertical, Spacing.sm)
+            } else if vm.hasData {
+                // Real data
+                HStack(spacing: Spacing.sm) {
+                    Text(vm.stressLevel.rawValue)
+                        .font(.calmTitle2)
+                        .foregroundStyle(vm.stressLevel.color)
+                    Text("·")
+                        .foregroundStyle(.secondary)
+                    Text("\(Int(vm.currentHRV))ms HRV")
+                        .font(.calmTitle2)
+                        .foregroundStyle(.primary)
+                }
+                StressGaugeView(stressLevel: vm.stressLevel, hrv: vm.currentHRV)
+                    .frame(height: 20)
+                    .padding(.horizontal, Spacing.xl)
+            } else {
+                // No data from Apple Watch yet
+                VStack(spacing: Spacing.xs) {
+                    Text("No HRV data yet")
+                        .font(.calmCallout)
+                        .foregroundStyle(.secondary)
+                    Text("Wear your Apple Watch for a few minutes")
+                        .font(.calmCaption)
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.vertical, Spacing.sm)
             }
-
-            // Stress gauge
-            StressGaugeView(stressLevel: vm.stressLevel, hrv: vm.currentHRV)
-                .frame(height: 20)
-                .padding(.horizontal, Spacing.xl)
         }
         .padding(Spacing.lg)
         .liquidGlass(cornerRadius: CornerRadius.xl)
@@ -116,12 +131,14 @@ struct DashboardView: View {
                     .font(.calmCaption)
                     .foregroundStyle(.secondary)
                 HStack(alignment: .bottom, spacing: 4) {
-                    Text("\(Int(vm.currentHRV))")
+                    Text(vm.hasData ? "\(Int(vm.currentHRV))" : "—")
                         .font(.calmMetricLG)
-                    Text("ms")
-                        .font(.calmSubheadline)
-                        .foregroundStyle(.secondary)
-                        .padding(.bottom, 4)
+                    if vm.hasData {
+                        Text("ms")
+                            .font(.calmSubheadline)
+                            .foregroundStyle(.secondary)
+                            .padding(.bottom, 4)
+                    }
                 }
                 HStack(spacing: 4) {
                     Image(systemName: vm.trendArrow)

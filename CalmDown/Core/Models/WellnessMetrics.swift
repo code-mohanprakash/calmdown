@@ -30,6 +30,15 @@ struct WellnessMetrics {
         }
     }
 
+    static var empty: WellnessMetrics {
+        WellnessMetrics(
+            sleepDuration: 0, sleepQuality: .fair, sleepHeartRate: 0,
+            activeCalories: 0, exerciseMinutes: 0, standHours: 0,
+            daylightMinutes: 0, mindfulnessMinutes: 0, stepCount: 0,
+            noiseLevel: 0, restingHeartRate: 0, heartRate: 0
+        )
+    }
+
     static var preview: WellnessMetrics {
         WellnessMetrics(
             sleepDuration: 29400,

@@ -12,7 +12,7 @@ struct ActionsView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: Spacing.md) {
                         // Sleep card (full width) — tappable
-                        SleepMetricCard(sleep: vm.sleep, onTap: { showingSleep = true })
+                        SleepMetricCard(sleep: vm.sleep ?? .empty, onTap: { showingSleep = true })
 
                         // Fitness (full width)
                         FitnessMetricCard(

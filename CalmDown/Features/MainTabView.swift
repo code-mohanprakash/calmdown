@@ -30,7 +30,7 @@ struct MainTabView: View {
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 .tag(5)
         }
-        .tint(Color.calmMint)
+        .tint(Color.calmBlue)
         .sheet(isPresented: $showWatchFaces) {
             WatchFacesView()
         }

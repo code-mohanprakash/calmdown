@@ -2,9 +2,9 @@ import Foundation
 
 @MainActor
 final class ActionsViewModel: ObservableObject {
-    @Published var metrics: WellnessMetrics = .preview
-    @Published var sleep:   SleepData       = .preview
-    @Published var isLoading = false
+    @Published var metrics:    WellnessMetrics = .empty
+    @Published var sleep:      SleepData?      = nil
+    @Published var isLoading   = false
 
     private let healthKit = HealthKitService.shared
 
@@ -16,35 +16,35 @@ final class ActionsViewModel: ObservableObject {
     }
 
     private func fetchMetrics() async {
-        async let calories     = healthKit.fetchTodayActiveCalories()
-        async let exerciseMin  = healthKit.fetchTodayExerciseMinutes()
-        async let standHours   = healthKit.fetchTodayStandHours()
-        async let daylight     = healthKit.fetchTodayDaylightMinutes()
-        async let mindful      = healthKit.fetchTodayMindfulMinutes()
-        async let steps        = healthKit.fetchTodaySteps()
-        async let noise        = healthKit.fetchTodayNoiseLevel()
-        async let rhr          = healthKit.fetchRestingHeartRate()
-        async let hr           = healthKit.fetchLatestHeartRate()
-        async let sleep        = healthKit.fetchLastNightSleep()
+        async let calories    = healthKit.fetchTodayActiveCalories()
+        async let exerciseMin = healthKit.fetchTodayExerciseMinutes()
+        async let standHours  = healthKit.fetchTodayStandHours()
+        async let daylight    = healthKit.fetchTodayDaylightMinutes()
+        async let mindful     = healthKit.fetchTodayMindfulMinutes()
+        async let steps       = healthKit.fetchTodaySteps()
+        async let noise       = healthKit.fetchTodayNoiseLevel()
+        async let rhr         = healthKit.fetchRestingHeartRate()
+        async let hr          = healthKit.fetchLatestHeartRate()
+        async let sleepResult = healthKit.fetchLastNightSleep()
 
         let (cal, exMin, stand, day, mind, step, noiseLvl, rhrVal, hrVal, sleepData) =
-            await (calories, exerciseMin, standHours, daylight, mindful, steps, noise, rhr, hr, sleep)
+            await (calories, exerciseMin, standHours, daylight, mindful, steps, noise, rhr, hr, sleepResult)
 
         metrics = WellnessMetrics(
-            sleepDuration:      sleepData?.totalDuration   ?? metrics.sleepDuration,
-            sleepQuality:       sleepData?.quality         ?? metrics.sleepQuality,
-            sleepHeartRate:     sleepData?.averageHeartRate ?? metrics.sleepHeartRate,
-            activeCalories:     cal  > 0 ? cal  : metrics.activeCalories,
-            exerciseMinutes:    exMin > 0 ? exMin : metrics.exerciseMinutes,
-            standHours:         stand > 0 ? Int(stand) : metrics.standHours,
-            daylightMinutes:    day   > 0 ? day   : metrics.daylightMinutes,
-            mindfulnessMinutes: mind  > 0 ? mind  : metrics.mindfulnessMinutes,
-            stepCount:          step  > 0 ? Int(step) : metrics.stepCount,
-            noiseLevel:         noiseLvl ?? metrics.noiseLevel,
-            restingHeartRate:   rhrVal ?? metrics.restingHeartRate,
-            heartRate:          hrVal  ?? metrics.heartRate
+            sleepDuration:      sleepData?.totalDuration    ?? 0,
+            sleepQuality:       sleepData?.quality          ?? .fair,
+            sleepHeartRate:     sleepData?.averageHeartRate ?? 0,
+            activeCalories:     cal   > 0 ? cal   : 0,
+            exerciseMinutes:    exMin > 0 ? exMin : 0,
+            standHours:         stand > 0 ? Int(stand) : 0,
+            daylightMinutes:    day   > 0 ? day   : 0,
+            mindfulnessMinutes: mind  > 0 ? mind  : 0,
+            stepCount:          step  > 0 ? Int(step) : 0,
+            noiseLevel:         noiseLvl ?? 0,
+            restingHeartRate:   rhrVal   ?? 0,
+            heartRate:          hrVal    ?? 0
         )
 
-        if let sd = sleepData { self.sleep = sd }
+        sleep = sleepData
     }
 }

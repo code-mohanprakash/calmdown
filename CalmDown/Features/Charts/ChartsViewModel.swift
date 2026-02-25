@@ -21,7 +21,6 @@ final class ChartsViewModel: ObservableObject {
 
     func loadData() async {
         isLoading = true
-        loadMockData()
         try? await healthKit.requestAuthorization()
 
         let days: Int
@@ -36,20 +35,11 @@ final class ChartsViewModel: ObservableObject {
         if !realReadings.isEmpty {
             readings     = realReadings
             weeklyData   = HRVAnalysisService.weeklyAverages(readings: realReadings)
+        } else {
+            readings   = []
+            weeklyData = []
         }
         isLoading = false
-    }
-
-    private func loadMockData() {
-        let count: Int
-        switch selectedPeriod {
-        case .hourly:  count = 24
-        case .daily:   count = 7 * 4
-        case .monthly: count = 30 * 2
-        case .yearly:  count = 100
-        }
-        readings   = HRVReading.mockReadings(count: count)
-        weeklyData = HRVAnalysisService.weeklyAverages(readings: readings)
     }
 }
 

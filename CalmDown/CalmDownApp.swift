@@ -12,7 +12,7 @@ struct CalmDownApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            AppRootView()
                 .preferredColorScheme(colorScheme)
                 .environmentObject(storeKit)
         }

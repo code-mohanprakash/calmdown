@@ -7,28 +7,25 @@ struct SleepView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // Dark navy background with stars
                 Color.calmNavy.ignoresSafeArea()
                 starsBackground
 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: Spacing.lg) {
-                        // Circular sleep quality ring
-                        sleepRingSection
-
-                        // Stats row
-                        statsRow
-
-                        // Stage chart
-                        stagesCard
-
-                        // Heart rate chart
-                        heartRateCard
-
-                        Spacer(minLength: Spacing.xxl)
+                if vm.isLoading {
+                    loadingView
+                } else if let sleep = vm.sleepData {
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: Spacing.lg) {
+                            sleepRingSection(sleep: sleep)
+                            statsRow(sleep: sleep)
+                            stagesCard(sleep: sleep)
+                            heartRateCard
+                            Spacer(minLength: Spacing.xxl)
+                        }
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.top, Spacing.lg)
                     }
-                    .padding(.horizontal, Spacing.md)
-                    .padding(.top, Spacing.lg)
+                } else {
+                    noDataView
                 }
             }
             .navigationTitle("Sleep")
@@ -46,7 +43,36 @@ struct SleepView: View {
         .task { await vm.loadData() }
     }
 
-    // MARK: - Subviews
+    // MARK: - Empty / Loading states
+
+    private var loadingView: some View {
+        VStack(spacing: Spacing.md) {
+            ProgressView()
+                .tint(.white)
+            Text("Loading sleep data…")
+                .font(.calmBody)
+                .foregroundStyle(.white.opacity(0.7))
+        }
+    }
+
+    private var noDataView: some View {
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "moon.zzz.fill")
+                .font(.system(size: 60))
+                .foregroundStyle(Color.calmLavender)
+            Text("No Sleep Data")
+                .font(.calmTitle2)
+                .foregroundStyle(.white)
+            Text("Make sure you wear your Apple Watch to bed and have sleep tracking enabled in the Health app.")
+                .font(.calmBody)
+                .foregroundStyle(.white.opacity(0.6))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Spacing.xl)
+        }
+        .padding(Spacing.xl)
+    }
+
+    // MARK: - Stars background
     private var starsBackground: some View {
         GeometryReader { geo in
             ForEach(0..<80, id: \.self) { i in
@@ -61,28 +87,27 @@ struct SleepView: View {
         }
     }
 
-    private var sleepRingSection: some View {
+    // MARK: - Sleep ring
+    private func sleepRingSection(sleep: SleepData) -> some View {
         VStack(spacing: Spacing.md) {
             ZStack {
-                // Multiple rings
                 RingProgressView(
-                    progress: Double(vm.sleepData.quality.score) / 100,
+                    progress: Double(sleep.quality.score) / 100,
                     color: .calmLavender,
                     lineWidth: 16,
                     size: 180
                 )
-
                 VStack(spacing: 4) {
                     Image(systemName: "moon.stars.fill")
                         .font(.system(size: 28))
                         .foregroundStyle(Color.calmLavender)
-                    Text(vm.sleepData.quality.rawValue)
+                    Text(sleep.quality.rawValue)
                         .font(.calmTitle2)
                         .foregroundStyle(.white)
                 }
             }
 
-            Text("You've reached your sleep goal and your sleep quality is great. Keep it up! You're waking up fully recharged, ready to take the day ahead and handle any stress with ease.")
+            Text(sleepSummaryText(sleep: sleep))
                 .font(.calmCaption)
                 .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -92,11 +117,27 @@ struct SleepView: View {
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: CornerRadius.xl))
     }
 
-    private var statsRow: some View {
+    private func sleepSummaryText(sleep: SleepData) -> String {
+        switch sleep.quality {
+        case .excellent:
+            return "Excellent sleep! Your body recovered well. You're ready to handle today's stress."
+        case .good:
+            return "Good sleep last night. Your HRV should be elevated this morning."
+        case .fair:
+            return "Fair sleep. Consider going to bed earlier and reducing screen time tonight."
+        case .poor:
+            return "Poor sleep detected. This can elevate stress hormones — try to rest more today."
+        }
+    }
+
+    // MARK: - Stats row
+    private func statsRow(sleep: SleepData) -> some View {
         HStack(spacing: Spacing.md) {
-            sleepStatItem(title: "Duration", value: vm.sleepData.durationString, icon: "bed.double.fill", color: .calmLavender)
+            sleepStatItem(title: "Duration", value: sleep.durationString, icon: "bed.double.fill", color: .calmLavender)
             Divider().background(Color.white.opacity(0.2))
-            sleepStatItem(title: "Quality", value: vm.sleepData.quality.rawValue, icon: "star.fill", color: .yellow)
+            sleepStatItem(title: "Quality", value: sleep.quality.rawValue, icon: "star.fill", color: .yellow)
+            Divider().background(Color.white.opacity(0.2))
+            sleepStatItem(title: "Avg HR", value: "\(Int(sleep.averageHeartRate))bpm", icon: "heart.fill", color: .calmPink)
         }
         .padding(Spacing.md)
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: CornerRadius.md))
@@ -117,18 +158,27 @@ struct SleepView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private var stagesCard: some View {
+    // MARK: - Stages card
+    private func stagesCard(sleep: SleepData) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("Sleep Stages")
                 .font(.calmHeadline)
                 .foregroundStyle(.white)
 
-            SleepChartView(stages: vm.sleepData.stages, heartRateData: [])
+            if sleep.stages.isEmpty {
+                Text("No stage data available")
+                    .font(.calmCaption)
+                    .foregroundStyle(.white.opacity(0.5))
+                    .frame(height: 60)
+            } else {
+                SleepChartView(stages: sleep.stages, heartRateData: [])
+            }
         }
         .padding(Spacing.md)
         .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: CornerRadius.md))
     }
 
+    // MARK: - Heart rate card
     private var heartRateCard: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("Heart Rate During Sleep")
@@ -136,7 +186,7 @@ struct SleepView: View {
                 .foregroundStyle(.white)
 
             if vm.heartRateData.isEmpty {
-                Text("No data available")
+                Text("No heart rate data available")
                     .font(.calmCaption)
                     .foregroundStyle(.white.opacity(0.5))
                     .frame(height: 80)

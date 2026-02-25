@@ -14,6 +14,7 @@
 		15A3679BBBD960EC83982FBA /* WidgetColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3BC3013AE0377355F463F7 /* WidgetColorExtension.swift */; };
 		1BB2F4A4B6415D7C5A6A3089 /* HRVReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D4EA7B309339ADDA25CF6D /* HRVReading.swift */; };
 		1E0C028C31FDB1D08CA67603 /* SleepData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B502ACE00B03E4C4EE86A3B5 /* SleepData.swift */; };
+		22C8297C45BD56A6B077FDDE /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B47EB302EC5E442002A63B /* OnboardingView.swift */; };
 		2449D63C90813B8589BF2C29 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662DB7FBC79A4F2182486A25 /* ColorPalette.swift */; };
 		286C5F6E06C3D56F2AA3FDB3 /* AppGroupStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244A38D69406CB46DFBF18C8 /* AppGroupStore.swift */; };
 		2C0A8522C890EAC0F1F6CF92 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D614BCD940B5279BDD6312 /* Color+Hex.swift */; };
@@ -142,6 +143,7 @@
 		D483C5524D46C3A03228EEFF /* StressWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressWidget.swift; sourceTree = "<group>"; };
 		D4C8E0460DB5B2351B804187 /* WatchShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchShared.swift; sourceTree = "<group>"; };
 		D73C82EC841391B4074D6E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D8B47EB302EC5E442002A63B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D8DEF6D98EB36CE68A89F623 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		DCDB55C83FB724FC45FD85D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E72C69D0848ACEE69F8C3A81 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				69BFF6387D22707B04095893 /* Charts */,
 				33AB233F1FCF7A2E6894B6C3 /* Dashboard */,
 				A1690D380BE0C402D62F90B7 /* Insights */,
+				33644B373DDFB8AC79F8324E /* Onboarding */,
 				5B537F5069881ECE48F636EC /* Settings */,
 				E6D904D50DD742EF9DA85E45 /* Sleep */,
 				0142E34A5E57BD2B89CFD386 /* Tracking */,
@@ -208,6 +211,14 @@
 				86949CF0E4E333ACF992D3B7 /* WidgetDataStore.swift */,
 			);
 			path = CalmDownWidgets;
+			sourceTree = "<group>";
+		};
+		33644B373DDFB8AC79F8324E /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				D8B47EB302EC5E442002A63B /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		33AB233F1FCF7A2E6894B6C3 /* Dashboard */ = {
@@ -576,6 +587,7 @@
 				961560F263CA8EE2330A7419 /* MoodView.swift in Sources */,
 				BD9022E3FEA3D9D7CA53895D /* MrFizzView.swift in Sources */,
 				36FD3ABB3A7A4A6753A19207 /* NotificationService.swift in Sources */,
+				22C8297C45BD56A6B077FDDE /* OnboardingView.swift in Sources */,
 				B09B57BE29AF83152E6678CE /* PremiumView.swift in Sources */,
 				B5C6C68589A0E13318CEEFFF /* RingProgressView.swift in Sources */,
 				8174A35DE8B9D9FDABEB4AFD /* SettingsView.swift in Sources */,

@@ -3,12 +3,12 @@ import Combine
 
 @MainActor
 final class DashboardViewModel: ObservableObject {
-    @Published var currentHRV:    Double      = 51
-    @Published var stressLevel:   StressLevel = .great
-    @Published var heartRate:     Double      = 72
+    @Published var currentHRV:    Double      = 0
+    @Published var stressLevel:   StressLevel = .normal
+    @Published var heartRate:     Double      = 0
     @Published var hrvReadings:   [HRVReading] = []
-    @Published var isLoading      = false
-    @Published var userName:      String      = "Alex"
+    @Published var isLoading      = true
+    @Published var hasData        = false
 
     private let healthKit  = HealthKitService.shared
 
@@ -18,13 +18,6 @@ final class DashboardViewModel: ObservableObject {
 
     var dailyAverageHRV: Double {
         HRVAnalysisService.dailyAverage(readings: hrvReadings)
-    }
-
-    init() {
-        // Load saved user name
-        userName = UserDefaults.standard.string(forKey: "userName") ?? "Alex"
-        // Load mock data immediately
-        loadMockData()
     }
 
     func loadData() async {
@@ -40,6 +33,7 @@ final class DashboardViewModel: ObservableObject {
             if realHRV > 0 {
                 currentHRV  = realHRV
                 stressLevel = StressLevel.from(hrv: realHRV)
+                hasData     = true
                 AppGroupStore.saveHRV(realHRV, stress: stressLevel.rawValue)
             }
             if realHR > 0 { heartRate = realHR }
@@ -49,12 +43,5 @@ final class DashboardViewModel: ObservableObject {
             print("HealthKit auth error:", error)
         }
         isLoading = false
-    }
-
-    private func loadMockData() {
-        let mock = HRVReading.mockReadings(count: 24)
-        hrvReadings  = mock
-        currentHRV   = mock.last?.value ?? 51
-        stressLevel  = StressLevel.from(hrv: currentHRV)
     }
 }

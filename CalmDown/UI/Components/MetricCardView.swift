@@ -46,22 +46,31 @@ struct SleepMetricCard: View {
             iconColor: .calmLavender,
             title: "Sleep",
             content: AnyView(
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Duration").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text(sleep.durationString).font(.calmMetricSM).foregroundStyle(.primary)
+                Group {
+                    if sleep.hasData {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Duration").font(.calmCaption2).foregroundStyle(.secondary)
+                                Text(sleep.durationString).font(.calmMetricSM).foregroundStyle(.primary)
+                            }
+                            Spacer()
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Quality").font(.calmCaption2).foregroundStyle(.secondary)
+                                Text(sleep.quality.rawValue).font(.calmMetricSM).foregroundStyle(Color.calmLavender)
+                            }
+                            Spacer()
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Avg HR").font(.calmCaption2).foregroundStyle(.secondary)
+                                Text("\(Int(sleep.averageHeartRate))bpm").font(.calmMetricSM).foregroundStyle(.primary)
+                            }
+                            RingProgressView(progress: Double(sleep.quality.score) / 100, color: .calmLavender, lineWidth: 6, size: 44)
+                        }
+                    } else {
+                        Text("No sleep data yet — wear your Apple Watch to bed")
+                            .font(.calmCaption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Quality").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text(sleep.quality.rawValue).font(.calmMetricSM).foregroundStyle(Color.calmLavender)
-                    }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Avg HR").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text("\(Int(sleep.averageHeartRate))bpm").font(.calmMetricSM).foregroundStyle(.primary)
-                    }
-                    RingProgressView(progress: Double(sleep.quality.score) / 100, color: .calmLavender, lineWidth: 6, size: 44)
                 }
             ),
             onTap: onTap
@@ -100,7 +109,7 @@ struct FitnessMetricCard: View {
                         exerciseProgress: min(exerciseMin / 30, 1.0),
                         standProgress: min(Double(standHours) / 12, 1.0)
                     )
-                    .frame(width: 44, height: 44)
+                    .frame(width: 70, height: 70)
                 }
             )
         )

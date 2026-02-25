@@ -43,6 +43,16 @@ struct SleepData: Identifiable {
     }
 
     static var preview: SleepData { SleepData() }
+
+    /// Zero-value state for when no HealthKit data is available yet
+    static var empty: SleepData {
+        SleepData(totalDuration: 0, remDuration: 0, deepDuration: 0,
+                  coreDuration: 0, awakeTime: 0, averageHeartRate: 0,
+                  quality: .fair, stages: [SleepStage(startTime: .distantPast,
+                                                       endTime: .distantPast, stage: .awake)])
+    }
+
+    var hasData: Bool { totalDuration > 0 }
 }
 
 enum SleepQuality: String, CaseIterable, Codable {
