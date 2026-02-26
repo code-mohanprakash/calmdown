@@ -155,4 +155,5 @@ final class BreathingViewModel: ObservableObject {
 
 #Preview {
     BreathingView()
+        .environmentObject(StoreKitService.shared)
 }

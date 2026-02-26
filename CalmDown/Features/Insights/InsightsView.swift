@@ -23,6 +23,7 @@ struct InsightsView: View {
                         VStack(spacing: Spacing.lg) {
                             periodPicker
                             hrvTrendCard
+                            moodPatternCard
                             keyActionsCard
                             Spacer(minLength: Spacing.xxl)
                         }
@@ -173,6 +174,103 @@ struct InsightsView: View {
         .liquidGlass(cornerRadius: CornerRadius.md)
     }
 
+    // MARK: - Mood Pattern card
+    private var moodPatternCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack {
+                Text("Mood Patterns")
+                    .font(.calmHeadline)
+                Spacer()
+                Text("Past \(selectedDays) days")
+                    .font(.calmCaption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let summary = vm.moodSummary {
+                HStack(spacing: Spacing.md) {
+                    // Most felt
+                    VStack(spacing: 4) {
+                        ZStack {
+                            Circle().fill(Color.calmBlue.opacity(0.12)).frame(width: 48, height: 48)
+                            Image(systemName: "face.smiling")
+                                .font(.system(size: 20))
+                                .foregroundStyle(Color.calmBlue)
+                        }
+                        Text(summary.topEmotion)
+                            .font(.calmCaption)
+                            .fontWeight(.semibold)
+                        Text("Most felt")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    Divider().frame(height: 60)
+
+                    // Avg energy
+                    VStack(spacing: 4) {
+                        ZStack {
+                            Circle().fill(Color.orange.opacity(0.12)).frame(width: 48, height: 48)
+                            Image(systemName: "bolt.fill")
+                                .font(.system(size: 20))
+                                .foregroundStyle(.orange)
+                        }
+                        Text(String(format: "%.1f/5", summary.avgEnergy))
+                            .font(.calmCaption)
+                            .fontWeight(.semibold)
+                        Text("Avg energy")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    Divider().frame(height: 60)
+
+                    // Positive ratio
+                    VStack(spacing: 4) {
+                        ZStack {
+                            Circle().fill(Color.green.opacity(0.12)).frame(width: 48, height: 48)
+                            Text("\(Int(summary.positiveRatio * 100))%")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundStyle(.green)
+                        }
+                        Text("\(summary.totalLogs) logs")
+                            .font(.calmCaption)
+                            .fontWeight(.semibold)
+                        Text("Positive mood")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+
+                if let trigger = summary.topTrigger {
+                    HStack(spacing: Spacing.sm) {
+                        Image(systemName: "tag.fill")
+                            .font(.caption2)
+                            .foregroundStyle(Color.calmCoral)
+                        Text("Top stress trigger: ")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                        Text(trigger)
+                            .font(.calmCaption2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.calmCoral)
+                    }
+                    .padding(.top, Spacing.xs)
+                }
+
+            } else {
+                noDataPlaceholder(
+                    icon: "face.smiling",
+                    message: "Log your mood in the Track tab to see patterns here."
+                )
+            }
+        }
+        .padding(Spacing.md)
+        .liquidGlass(cornerRadius: CornerRadius.md)
+    }
+
     // MARK: - Helpers
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
@@ -252,6 +350,15 @@ final class InsightsViewModel: ObservableObject {
     @Published var dailyHRVPoints: [DailyHRVPoint] = []
     @Published var keyActions:     [KeyActionItem]  = []
     @Published var isLoading = false
+    @Published var moodSummary: MoodSummary? = nil
+
+    struct MoodSummary {
+        let topEmotion: String
+        let topTrigger: String?
+        let avgEnergy: Double
+        let totalLogs: Int
+        let positiveRatio: Double  // 0.0–1.0
+    }
 
     private let healthKit = HealthKitService.shared
 
@@ -286,6 +393,9 @@ final class InsightsViewModel: ObservableObject {
 
         // ── Key Actions from real data ─────────────────────────────
         await computeKeyActions(context: context, days: days)
+
+        // ── Mood summary ───────────────────────────────────────────
+        await computeMoodSummary(context: context, days: days)
 
         isLoading = false
     }
@@ -369,6 +479,41 @@ final class InsightsViewModel: ObservableObject {
 
         keyActions = actions
     }
+
+    private func computeMoodSummary(context: ModelContext, days: Int) async {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+        let descriptor = FetchDescriptor<MoodEntry>(
+            predicate: #Predicate { $0.timestamp >= cutoff }
+        )
+        guard let entries = try? context.fetch(descriptor), !entries.isEmpty else {
+            moodSummary = nil
+            return
+        }
+
+        // Top emotion
+        let emotionCounts = Dictionary(grouping: entries, by: \.emotion).mapValues(\.count)
+        let topEmotion = emotionCounts.max(by: { $0.value < $1.value })?.key ?? "—"
+
+        // Top trigger
+        let allTriggers = entries.flatMap { $0.triggers.split(separator: ",").map(String.init) }
+        let triggerCounts = Dictionary(grouping: allTriggers, by: { $0 }).mapValues(\.count)
+        let topTrigger = triggerCounts.max(by: { $0.value < $1.value })?.key
+
+        // Avg energy
+        let avgEnergy = entries.map { Double($0.energyLevel) }.reduce(0, +) / Double(entries.count)
+
+        // Positive ratio — energyLevel >= 3 as positive proxy
+        let positiveCount = entries.filter { $0.energyLevel >= 3 }.count
+        let positiveRatio = Double(positiveCount) / Double(entries.count)
+
+        moodSummary = MoodSummary(
+            topEmotion: topEmotion,
+            topTrigger: topTrigger,
+            avgEnergy: avgEnergy,
+            totalLogs: entries.count,
+            positiveRatio: positiveRatio
+        )
+    }
 }
 
 // MARK: - Models
@@ -394,5 +539,6 @@ struct KeyActionItem: Identifiable {
 
 #Preview {
     InsightsView()
+        .environmentObject(StoreKitService.shared)
         .modelContainer(for: [HydrationEntry.self, MoodEntry.self, HRVReading.self], inMemory: true)
 }

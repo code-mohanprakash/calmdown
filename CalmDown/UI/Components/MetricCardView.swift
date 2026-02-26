@@ -89,30 +89,62 @@ struct FitnessMetricCard: View {
             iconColor: .calmCoral,
             title: "Fitness",
             content: AnyView(
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Move").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text("\(Int(calories))CAL").font(.calmMetricSM).foregroundStyle(Color.calmCoral)
+                VStack(spacing: Spacing.sm) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Move").font(.calmCaption2).foregroundStyle(.secondary)
+                            Text("\(Int(calories)) CAL").font(.calmMetricSM).foregroundStyle(Color.calmCoral)
+                        }
+                        Spacer()
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Exercise").font(.calmCaption2).foregroundStyle(.secondary)
+                            Text("\(Int(exerciseMin)) min").font(.calmMetricSM).foregroundStyle(.green)
+                        }
+                        Spacer()
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Stand").font(.calmCaption2).foregroundStyle(.secondary)
+                            Text("\(standHours) hr").font(.calmMetricSM).foregroundStyle(.blue)
+                        }
+                        ActivityRingsView(
+                            moveProgress: min(calories / 600, 1.0),
+                            exerciseProgress: min(exerciseMin / 30, 1.0),
+                            standProgress: min(Double(standHours) / 12, 1.0)
+                        )
+                        .frame(width: 70, height: 70)
                     }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Exercise").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text("\(Int(exerciseMin))m").font(.calmMetricSM).foregroundStyle(.green)
+
+                    // Goals progress bars
+                    VStack(spacing: 4) {
+                        GoalProgressRow(label: "Move", progress: min(calories / 600, 1.0), color: .calmCoral, goal: "600 CAL")
+                        GoalProgressRow(label: "Exercise", progress: min(exerciseMin / 30, 1.0), color: .green, goal: "30 min")
+                        GoalProgressRow(label: "Stand", progress: min(Double(standHours) / 12, 1.0), color: .blue, goal: "12 hr")
                     }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Stand").font(.calmCaption2).foregroundStyle(.secondary)
-                        Text("\(standHours)h").font(.calmMetricSM).foregroundStyle(.blue)
-                    }
-                    ActivityRingsView(
-                        moveProgress: min(calories / 600, 1.0),
-                        exerciseProgress: min(exerciseMin / 30, 1.0),
-                        standProgress: min(Double(standHours) / 12, 1.0)
-                    )
-                    .frame(width: 70, height: 70)
                 }
             )
         )
+    }
+}
+
+struct GoalProgressRow: View {
+    let label: String
+    let progress: Double
+    let color: Color
+    let goal: String
+
+    var body: some View {
+        HStack(spacing: Spacing.sm) {
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundStyle(.secondary)
+                .frame(width: 44, alignment: .leading)
+            ProgressView(value: min(progress, 1.0))
+                .tint(progress >= 1.0 ? .green : color)
+                .scaleEffect(x: 1, y: 1.2, anchor: .center)
+            Text(progress >= 1.0 ? "✓" : "\(Int(min(progress, 1.0) * 100))%")
+                .font(.system(size: 9))
+                .foregroundStyle(progress >= 1.0 ? .green : .secondary)
+                .frame(width: 26, alignment: .trailing)
+        }
     }
 }
 
@@ -123,6 +155,8 @@ struct SimpleMetricCard: View {
     let value: String
     let unit: String
     let symbolName: String
+    var progress: Double? = nil
+    var goalText: String? = nil
 
     var body: some View {
         MetricCardView(
@@ -130,18 +164,39 @@ struct SimpleMetricCard: View {
             iconColor: iconColor,
             title: title,
             content: AnyView(
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(value)
-                            .font(.calmMetricSM)
-                        Text(unit)
-                            .font(.calmCaption2)
-                            .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(value)
+                                .font(.calmMetricSM)
+                            Text(unit)
+                                .font(.calmCaption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: symbolName)
+                            .font(.system(size: 32))
+                            .foregroundStyle(iconColor.opacity(0.8))
                     }
-                    Spacer()
-                    Image(systemName: symbolName)
-                        .font(.system(size: 32))
-                        .foregroundStyle(iconColor)
+
+                    if let p = progress {
+                        VStack(alignment: .leading, spacing: 3) {
+                            ProgressView(value: min(p, 1.0))
+                                .tint(p >= 1.0 ? .green : iconColor)
+                                .scaleEffect(x: 1, y: 1.4, anchor: .center)
+                            if let goalText = goalText {
+                                HStack {
+                                    Text(goalText)
+                                        .font(.system(size: 9))
+                                        .foregroundStyle(.tertiary)
+                                    Spacer()
+                                    Text(p >= 1.0 ? "✓ Goal reached" : "\(Int(min(p, 1.0) * 100))%")
+                                        .font(.system(size: 9))
+                                        .foregroundStyle(p >= 1.0 ? .green : .secondary)
+                                }
+                            }
+                        }
+                    }
                 }
             )
         )

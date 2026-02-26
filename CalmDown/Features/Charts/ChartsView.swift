@@ -152,4 +152,6 @@ struct LevelBreakdownView: View {
 
 #Preview {
     ChartsView()
+        .environmentObject(StoreKitService.shared)
+        .modelContainer(for: [HRVReading.self, MoodEntry.self, HydrationEntry.self], inMemory: true)
 }

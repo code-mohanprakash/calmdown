@@ -34,12 +34,8 @@ final class SettingsViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(selectedTheme.rawValue, forKey: "appTheme") }
     }
 
-    @Published var showPremium   = false
     @Published var showBreathing = false
 
-    private let storeKit = StoreKitService.shared
-
-    var isPremium: Bool { storeKit.isPremium }
 
     init() {
         userName   = UserDefaults.standard.string(forKey: "userName") ?? "Alex"

@@ -44,7 +44,7 @@ struct HRVWidgetView: View {
         }
     }
 
-    private var smallView: some View {
+    private var hrvContent: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Image(systemName: "heart.fill")
@@ -65,15 +65,19 @@ struct HRVWidgetView: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(entry.stressColor)
         }
-        .padding(12)
-        .containerBackground(for: .widget) {
-            Color.widgetCream
-        }
+    }
+
+    private var smallView: some View {
+        hrvContent
+            .padding(12)
+            .containerBackground(for: .widget) {
+                Color.widgetCream
+            }
     }
 
     private var mediumView: some View {
         HStack(spacing: 16) {
-            smallView
+            hrvContent
             Divider()
             VStack(alignment: .leading, spacing: 8) {
                 Text("Stress Level")

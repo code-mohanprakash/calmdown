@@ -5,8 +5,9 @@ struct MrFizzView: View {
     let stressLevel: StressLevel
     let size: CGFloat
 
-    @State private var isPulsing = false
-    @State private var eyeBlink  = false
+    @State private var isPulsing  = false
+    @State private var eyeBlink   = false
+    @State private var blinkTask: Task<Void, Never>? = nil
 
     private var faceColor: Color { stressLevel.color }
 
@@ -68,14 +69,21 @@ struct MrFizzView: View {
             isPulsing = true
             startBlinkTimer()
         }
+        .onDisappear {
+            blinkTask?.cancel()
+            blinkTask = nil
+        }
     }
 
     private func startBlinkTimer() {
-        Task {
+        blinkTask?.cancel()
+        blinkTask = Task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 3_000_000_000)
+                guard !Task.isCancelled else { break }
                 withAnimation(.easeInOut(duration: 0.1)) { eyeBlink = true }
                 try? await Task.sleep(nanoseconds: 150_000_000)
+                guard !Task.isCancelled else { break }
                 withAnimation(.easeInOut(duration: 0.1)) { eyeBlink = false }
             }
         }

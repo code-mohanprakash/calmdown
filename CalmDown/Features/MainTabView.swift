@@ -35,6 +35,9 @@ struct MainTabView: View {
             WatchFacesView()
         }
         // Watch Faces accessible from Dashboard toolbar (see DashboardView)
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToTrack"))) { _ in
+            selectedTab = 2
+        }
     }
 }
 

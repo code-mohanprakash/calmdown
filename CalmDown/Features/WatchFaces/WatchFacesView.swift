@@ -233,4 +233,5 @@ extension Collection {
 
 #Preview {
     WatchFacesView()
+        .environmentObject(StoreKitService.shared)
 }

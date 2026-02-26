@@ -14,6 +14,7 @@ final class SleepViewModel: ObservableObject {
 
         if let real = await healthKit.fetchLastNightSleep() {
             sleepData = real
+            AppGroupStore.saveSleep(duration: real.durationString, quality: real.quality.rawValue)
         }
 
         // Heart rate during last night's sleep window

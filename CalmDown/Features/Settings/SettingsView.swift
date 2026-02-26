@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @StateObject private var vm = SettingsViewModel()
-    @EnvironmentObject private var storeKit: StoreKitService
     @Environment(\.modelContext) private var modelContext
 
     // Export
@@ -26,12 +25,11 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 profileSection
-                premiumSection
                 wellnessSection
                 notificationsSection
                 appearanceSection
                 healthSection
-                dataSection          // ← export / import
+                dataSection
                 aboutSection
             }
             .navigationTitle("Settings")
@@ -66,13 +64,10 @@ struct SettingsView: View {
         } message: {
             Text(exportError ?? importError ?? "")
         }
-        // Sheets
-        .sheet(isPresented: $vm.showPremium)   { PremiumView() }
         .sheet(isPresented: $vm.showBreathing) { BreathingView() }
         .onAppear {
             showBackupWarning = DataExportService.shouldNudgeBackup(context: modelContext)
         }
-        // Backup nudge banner is shown inside the Data section
     }
 
     // MARK: - Sections
@@ -89,38 +84,12 @@ struct SettingsView: View {
         }
     }
 
-    private var premiumSection: some View {
-        Section("Premium") {
-            if storeKit.isPremium {
-                Label("CalmDown Premium Active", systemImage: "checkmark.seal.fill")
-                    .foregroundStyle(Color.calmBlue)
-            } else {
-                Button {
-                    vm.showPremium = true
-                } label: {
-                    HStack {
-                        Label("Unlock Premium", systemImage: "star.fill")
-                            .foregroundStyle(Color.calmBlue)
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(.tertiary)
-                    }
-                }
-            }
-        }
-    }
-
     private var wellnessSection: some View {
         Section("Wellness") {
             Button {
-                if storeKit.isPremium { vm.showBreathing = true } else { vm.showPremium = true }
+                vm.showBreathing = true
             } label: {
-                HStack {
-                    Label("Breathing Exercise", systemImage: "wind")
-                    if !storeKit.isPremium {
-                        Spacer()
-                        Image(systemName: "lock.fill").font(.caption).foregroundStyle(.secondary)
-                    }
-                }
+                Label("Breathing Exercise", systemImage: "wind")
             }
         }
     }

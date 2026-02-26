@@ -214,4 +214,5 @@ struct PremiumFeature: Identifiable {
 
 #Preview {
     PremiumView()
+        .environmentObject(StoreKitService.shared)
 }

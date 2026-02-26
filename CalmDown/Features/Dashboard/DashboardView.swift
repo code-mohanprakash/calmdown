@@ -4,6 +4,8 @@ struct DashboardView: View {
     @StateObject private var vm = DashboardViewModel()
     @State private var showingSleepDetail = false
     @State private var showingWatchFaces  = false
+    @State private var showingBreathing   = false
+    @State private var showingInsights    = false
     @AppStorage("userName") private var userName = "Alex"
 
     var body: some View {
@@ -27,6 +29,9 @@ struct DashboardView: View {
 
                         // HRV mini card
                         hrvMiniCard
+
+                        // Wellness quick access
+                        wellnessCard
 
                         // Timeline
                         if !vm.hrvReadings.isEmpty {
@@ -65,6 +70,12 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingWatchFaces) {
             WatchFacesView()
+        }
+        .sheet(isPresented: $showingBreathing) {
+            BreathingView()
+        }
+        .sheet(isPresented: $showingInsights) {
+            InsightsView()
         }
     }
 
@@ -127,9 +138,21 @@ struct DashboardView: View {
     private var hrvMiniCard: some View {
         HStack(spacing: Spacing.md) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("HRV")
-                    .font(.calmCaption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 5) {
+                    Text("HRV")
+                        .font(.calmCaption)
+                        .foregroundStyle(.secondary)
+                    // Live indicator — green dot when data is fresh
+                    if let refreshed = vm.lastRefreshed,
+                       Date().timeIntervalSince(refreshed) < 300 {
+                        Circle()
+                            .fill(Color.green)
+                            .frame(width: 6, height: 6)
+                        Text("Live")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(.green)
+                    }
+                }
                 HStack(alignment: .bottom, spacing: 4) {
                     Text(vm.hasData ? "\(Int(vm.currentHRV))" : "—")
                         .font(.calmMetricLG)
@@ -148,6 +171,11 @@ struct DashboardView: View {
                         .lineLimit(2)
                 }
                 .foregroundStyle(.secondary)
+                if let refreshed = vm.lastRefreshed {
+                    Text("Updated \(refreshed, style: .relative) ago")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.tertiary)
+                }
             }
 
             Spacer()
@@ -155,6 +183,96 @@ struct DashboardView: View {
             if vm.hrvReadings.count > 3 {
                 HRVChartView(readings: Array(vm.hrvReadings.suffix(12)), showColorDots: true)
                     .frame(width: 140, height: 80)
+            }
+        }
+        .padding(Spacing.md)
+        .liquidGlass(cornerRadius: CornerRadius.md)
+    }
+
+    // MARK: - Wellness Quick Access
+    private var wellnessCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("Wellness")
+                .font(.calmHeadline)
+
+            HStack(spacing: Spacing.md) {
+                // Breathing button
+                Button {
+                    showingBreathing = true
+                } label: {
+                    VStack(spacing: Spacing.xs) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.calmBlue.opacity(0.12))
+                                .frame(width: 52, height: 52)
+                            Image(systemName: "wind")
+                                .font(.system(size: 22, weight: .medium))
+                                .foregroundStyle(Color.calmBlue)
+                        }
+                        Text("Breathe")
+                            .font(.calmCaption)
+                            .foregroundStyle(.primary)
+                        Text("Reduce stress now")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.calmBlue.opacity(0.05), in: RoundedRectangle(cornerRadius: CornerRadius.md))
+                }
+                .buttonStyle(.plain)
+
+                // Insights button
+                Button {
+                    showingInsights = true
+                } label: {
+                    VStack(spacing: Spacing.xs) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.calmLavender.opacity(0.25))
+                                .frame(width: 52, height: 52)
+                            Image(systemName: "chart.bar.fill")
+                                .font(.system(size: 22, weight: .medium))
+                                .foregroundStyle(Color.calmLavender)
+                        }
+                        Text("Insights")
+                            .font(.calmCaption)
+                            .foregroundStyle(.primary)
+                        Text("HRV trends & habits")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.calmLavender.opacity(0.08), in: RoundedRectangle(cornerRadius: CornerRadius.md))
+                }
+                .buttonStyle(.plain)
+
+                // Mood/Track button
+                Button {
+                    NotificationCenter.default.post(name: NSNotification.Name("SwitchToTrack"), object: nil)
+                } label: {
+                    VStack(spacing: Spacing.xs) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.calmMint.opacity(0.25))
+                                .frame(width: 52, height: 52)
+                            Image(systemName: "face.smiling.inverse")
+                                .font(.system(size: 22, weight: .medium))
+                                .foregroundStyle(Color.calmMint)
+                        }
+                        Text("Mood")
+                            .font(.calmCaption)
+                            .foregroundStyle(.primary)
+                        Text("Log how you feel")
+                            .font(.calmCaption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.calmMint.opacity(0.08), in: RoundedRectangle(cornerRadius: CornerRadius.md))
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(Spacing.md)
@@ -210,4 +328,6 @@ struct TimelineRowView: View {
 
 #Preview {
     DashboardView()
+        .environmentObject(StoreKitService.shared)
+        .modelContainer(for: [HRVReading.self, MoodEntry.self, HydrationEntry.self], inMemory: true)
 }

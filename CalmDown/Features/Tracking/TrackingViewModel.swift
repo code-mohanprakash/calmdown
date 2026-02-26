@@ -6,9 +6,18 @@ final class TrackingViewModel: ObservableObject {
     @Published var todayWaterMl:    Int = 0
     @Published var todayCaffeineMg: Int = 0
     @Published var selectedEmotions: Set<String> = []
+    @Published var moodNote:         String = ""
+    @Published var energyLevel:      Int = 3           // 1-5
+    @Published var selectedTriggers: Set<String> = []
+    @Published var recentMoods: [MoodEntry] = []
 
     let waterGoalMl    = 2000
     let caffeineGoalMg = 400
+
+    static let triggerOptions = [
+        "Work", "Sleep", "Family", "Relationship",
+        "Health", "Money", "Traffic", "Food", "Exercise", "Social"
+    ]
 
     var waterProgress: Double { Double(todayWaterMl) / Double(waterGoalMl) }
 
@@ -48,14 +57,42 @@ final class TrackingViewModel: ObservableObject {
         }
     }
 
+    func toggleTrigger(_ trigger: String) {
+        if selectedTriggers.contains(trigger) {
+            selectedTriggers.remove(trigger)
+        } else {
+            selectedTriggers.insert(trigger)
+        }
+    }
+
+    // MARK: - Recent moods
+    func loadRecentMoods(context: ModelContext) {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+        let descriptor = FetchDescriptor<MoodEntry>(
+            predicate: #Predicate { $0.timestamp >= cutoff },
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        recentMoods = (try? context.fetch(descriptor)) ?? []
+    }
+
     func saveMood(context: ModelContext) {
+        let triggersString = selectedTriggers.sorted().joined(separator: ",")
         for name in selectedEmotions {
             if let emotion = Emotion.catalog.first(where: { $0.name == name }) {
-                let entry = MoodEntry(emotion: emotion.name, emoji: emotion.emoji)
+                let entry = MoodEntry(
+                    emotion: emotion.name,
+                    emoji: emotion.emoji,
+                    note: moodNote,
+                    energyLevel: energyLevel,
+                    triggers: triggersString
+                )
                 context.insert(entry)
             }
         }
         try? context.save()
         selectedEmotions.removeAll()
+        selectedTriggers.removeAll()
+        moodNote = ""
+        energyLevel = 3
     }
 }

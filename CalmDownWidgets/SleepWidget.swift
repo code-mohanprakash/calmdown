@@ -60,9 +60,7 @@ struct SleepWidgetView: View {
         }
         .padding(12)
         .containerBackground(for: .widget) {
-            Color.widgetNavy
-                .opacity(0.05)
-                .overlay(Color.widgetCream)
+            Color.widgetCream
         }
     }
 }

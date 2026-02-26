@@ -46,5 +46,8 @@ final class ActionsViewModel: ObservableObject {
         )
 
         sleep = sleepData
+        if let s = sleepData {
+            AppGroupStore.saveSleep(duration: s.durationString, quality: s.quality.rawValue)
+        }
     }
 }

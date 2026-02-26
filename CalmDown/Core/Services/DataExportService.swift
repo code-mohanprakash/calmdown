@@ -21,11 +21,35 @@ struct HRVReadingDTO: Codable {
 }
 
 struct MoodEntryDTO: Codable {
-    let id:        String
-    let timestamp: Date
-    let emotion:   String
-    let emoji:     String
-    let note:      String
+    let id:          String
+    let timestamp:   Date
+    let emotion:     String
+    let emoji:       String
+    let note:        String
+    let energyLevel: Int
+    let triggers:    String
+
+    // Custom decode so old backup files (missing energyLevel/triggers) still import cleanly
+    init(id: String, timestamp: Date, emotion: String, emoji: String, note: String, energyLevel: Int, triggers: String) {
+        self.id          = id
+        self.timestamp   = timestamp
+        self.emotion     = emotion
+        self.emoji       = emoji
+        self.note        = note
+        self.energyLevel = energyLevel
+        self.triggers    = triggers
+    }
+
+    init(from decoder: Decoder) throws {
+        let c        = try decoder.container(keyedBy: CodingKeys.self)
+        id          = try c.decode(String.self,  forKey: .id)
+        timestamp   = try c.decode(Date.self,    forKey: .timestamp)
+        emotion     = try c.decode(String.self,  forKey: .emotion)
+        emoji       = try c.decode(String.self,  forKey: .emoji)
+        note        = try c.decode(String.self,  forKey: .note)
+        energyLevel = try c.decodeIfPresent(Int.self,    forKey: .energyLevel) ?? 3
+        triggers    = try c.decodeIfPresent(String.self, forKey: .triggers)    ?? ""
+    }
 }
 
 struct HydrationEntryDTO: Codable {
@@ -67,15 +91,15 @@ struct DataExportService {
                 HRVReadingDTO(id: $0.id.uuidString, timestamp: $0.timestamp, value: $0.value, heartRate: $0.heartRate)
             },
             moodEntries: moods.map {
-                MoodEntryDTO(id: $0.id.uuidString, timestamp: $0.timestamp, emotion: $0.emotion, emoji: $0.emoji, note: $0.note)
+                MoodEntryDTO(id: $0.id.uuidString, timestamp: $0.timestamp, emotion: $0.emotion, emoji: $0.emoji, note: $0.note, energyLevel: $0.energyLevel, triggers: $0.triggers)
             },
             hydrationEntries: hydro.map {
                 HydrationEntryDTO(id: $0.id.uuidString, timestamp: $0.timestamp, waterMl: $0.waterMl, caffeineMg: $0.caffeineMg)
             },
             settings: SettingsDTO(
                 userName: defaults.string(forKey: "userName") ?? "",
-                stressAlertsEnabled: defaults.bool(forKey: "stressAlertsEnabled"),
-                hydrationRemindersEnabled: defaults.bool(forKey: "hydrationRemindersEnabled")
+                stressAlertsEnabled: defaults.bool(forKey: "stressAlerts"),
+                hydrationRemindersEnabled: defaults.bool(forKey: "hydrationReminders")
             )
         )
     }
@@ -136,7 +160,9 @@ struct DataExportService {
                 timestamp: dto.timestamp,
                 emotion: dto.emotion,
                 emoji: dto.emoji,
-                note: dto.note
+                note: dto.note,
+                energyLevel: dto.energyLevel,
+                triggers: dto.triggers
             ))
             inserted.mood += 1
         }

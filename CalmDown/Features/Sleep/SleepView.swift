@@ -202,4 +202,5 @@ struct SleepView: View {
 
 #Preview {
     SleepView()
+        .environmentObject(StoreKitService.shared)
 }

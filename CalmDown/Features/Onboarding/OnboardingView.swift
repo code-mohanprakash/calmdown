@@ -3,6 +3,7 @@ import AuthenticationServices
 import HealthKit
 import SwiftData
 import UniformTypeIdentifiers
+import UserNotifications
 
 // MARK: - Root gate
 // Shows onboarding on first launch; MainTabView thereafter.
@@ -30,6 +31,7 @@ struct OnboardingView: View {
     @State private var healthGranted = false
     @State private var signedInWithApple = false
     @State private var isRequestingHealth = false
+    @State private var notifPermissionGranted = false
 
     // Restore from backup
     @State private var showRestorePicker  = false
@@ -38,17 +40,21 @@ struct OnboardingView: View {
     @State private var restoreError: String? = nil
 
     private let healthKit = HealthKitService.shared
-    private let totalPages = 4
+    private let totalPages = 5
 
     var body: some View {
         ZStack {
-            // Animated background
-            LinearGradient(
-                colors: [Color.calmLightBlue, Color.calmCream],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            // Warm sky blue background — matches the app
+            Color.calmCream
+                .ignoresSafeArea()
+
+            // Soft ambient glow
+            Circle()
+                .fill(Color.calmBlue.opacity(0.06))
+                .frame(width: 360, height: 360)
+                .blur(radius: 60)
+                .offset(x: -60, y: -120)
+                .allowsHitTesting(false)
 
             VStack(spacing: 0) {
                 // Page indicator
@@ -67,7 +73,8 @@ struct OnboardingView: View {
                     welcomePage.tag(0)
                     privacyPage.tag(1)
                     healthPage.tag(2)
-                    identityPage.tag(3)
+                    notificationsPage.tag(3)
+                    identityPage.tag(4)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut, value: page)
@@ -77,15 +84,68 @@ struct OnboardingView: View {
 
     // MARK: - Page 0: Welcome
     private var welcomePage: some View {
-        OnboardingPageLayout(
-            icon: "waveform.path.ecg.rectangle.fill",
-            iconColor: Color.calmBlue,
-            title: "CalmDown",
-            subtitle: "Scientifically monitor your stress through Heart Rate Variability (HRV) — the same biomarker used in clinical research.",
-            footnote: "HRV (SDNN) is a validated, non-invasive measure of autonomic nervous system balance and psychological stress. Higher values indicate lower stress and better recovery.\n\nRef: Shaffer & Ginsberg, 2017 — \"An Overview of Heart Rate Variability Metrics and Norms\"",
-            buttonTitle: "Get Started",
-            buttonAction: { withAnimation { page = 1 } }
-        )
+        VStack(spacing: Spacing.lg) {
+            Spacer()
+
+            // Mr. Fizz hero with glow
+            ZStack {
+                Circle()
+                    .fill(Color.stressGreat.opacity(0.15))
+                    .frame(width: 190, height: 190)
+                    .blur(radius: 24)
+                MrFizzView(stressLevel: .great, size: 140)
+            }
+
+            // App name + tagline
+            VStack(spacing: Spacing.sm) {
+                Text("CalmDown")
+                    .font(.calmLargeTitle)
+
+                Text("Scientifically monitor your stress through Heart Rate Variability — the same biomarker used in clinical research.")
+                    .font(.calmBody)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Spacing.lg)
+            }
+
+            // Science reference card
+            VStack(spacing: Spacing.xs) {
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: "waveform.path.ecg")
+                        .foregroundStyle(Color.calmBlue)
+                        .font(.system(size: 16))
+                    Text("HRV (SDNN) — a validated, non-invasive measure of autonomic nervous system balance.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: "books.vertical")
+                        .foregroundStyle(Color.calmBlue)
+                        .font(.system(size: 16))
+                    Text("Based on: Shaffer & Ginsberg (2017) · ESC Task Force (1996)")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.tertiary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(Spacing.md)
+            .liquidGlass(cornerRadius: CornerRadius.md)
+            .padding(.horizontal, Spacing.md)
+
+            Spacer()
+
+            Button {
+                withAnimation { page = 1 }
+            } label: {
+                Label("Get Started", systemImage: "arrow.right")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(OnboardingPrimaryButton())
+            .padding(.horizontal, Spacing.xl)
+            .padding(.bottom, Spacing.xl)
+        }
     }
 
     // MARK: - Page 1: Privacy
@@ -93,9 +153,15 @@ struct OnboardingView: View {
         VStack(spacing: Spacing.lg) {
             Spacer()
 
-            Image(systemName: "lock.shield.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(Color.calmBlue)
+            ZStack {
+                Circle()
+                    .fill(Color.calmBlue.opacity(0.12))
+                    .frame(width: 110, height: 110)
+                Image(systemName: "lock.shield.fill")
+                    .font(.system(size: 52))
+                    .foregroundStyle(Color.calmBlue)
+                    .symbolRenderingMode(.hierarchical)
+            }
 
             VStack(spacing: Spacing.sm) {
                 Text("Your Privacy Matters")
@@ -116,7 +182,7 @@ struct OnboardingView: View {
                 PrivacyRow(icon: "trash",         text: "Delete all data anytime in Settings")
             }
             .padding(Spacing.lg)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: CornerRadius.lg))
+            .liquidGlass(cornerRadius: CornerRadius.lg)
             .padding(.horizontal, Spacing.md)
 
             Spacer()
@@ -138,10 +204,15 @@ struct OnboardingView: View {
         VStack(spacing: Spacing.lg) {
             Spacer()
 
-            Image(systemName: "heart.text.square.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.pink)
-                .symbolRenderingMode(.multicolor)
+            ZStack {
+                Circle()
+                    .fill(Color.pink.opacity(0.12))
+                    .frame(width: 110, height: 110)
+                Image(systemName: "heart.text.square.fill")
+                    .font(.system(size: 52))
+                    .foregroundStyle(.pink)
+                    .symbolRenderingMode(.multicolor)
+            }
 
             VStack(spacing: Spacing.sm) {
                 Text("Connect Apple Health")
@@ -163,7 +234,7 @@ struct OnboardingView: View {
                 HealthDataRow(icon: "ear",               text: "Environmental Audio",         detail: "Noise stress factor")
             }
             .padding(Spacing.lg)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: CornerRadius.lg))
+            .liquidGlass(cornerRadius: CornerRadius.lg)
             .padding(.horizontal, Spacing.md)
 
             Spacer()
@@ -201,14 +272,100 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Page 3: Identity (Apple Sign In or name)
+    // MARK: - Page 3: Notifications
+    private var notificationsPage: some View {
+        VStack(spacing: Spacing.lg) {
+            Spacer()
+
+            ZStack {
+                Circle()
+                    .fill(Color.calmBlue.opacity(0.12))
+                    .frame(width: 110, height: 110)
+                Image(systemName: "bell.badge.fill")
+                    .font(.system(size: 52))
+                    .foregroundStyle(Color.calmBlue)
+                    .symbolRenderingMode(.hierarchical)
+            }
+
+            VStack(spacing: Spacing.sm) {
+                Text("Stay On Track")
+                    .font(.calmLargeTitle)
+                    .multilineTextAlignment(.center)
+
+                Text("Let CalmDown gently remind you to breathe, hydrate, and check in with your stress levels.")
+                    .font(.calmBody)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Spacing.md)
+            }
+
+            VStack(spacing: Spacing.md) {
+                HStack(spacing: Spacing.md) {
+                    ZStack {
+                        Circle().fill(Color.calmCoral.opacity(0.15)).frame(width: 44, height: 44)
+                        Image(systemName: "waveform.path.ecg").foregroundStyle(Color.calmCoral).font(.system(size: 20))
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Stress Alerts").font(.calmBody)
+                        Text("Notified when HRV indicates high stress").font(.calmCaption2).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.calmBlue)
+                }
+
+                Divider()
+
+                HStack(spacing: Spacing.md) {
+                    ZStack {
+                        Circle().fill(Color.blue.opacity(0.12)).frame(width: 44, height: 44)
+                        Image(systemName: "drop.fill").foregroundStyle(.blue).font(.system(size: 20))
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Hydration Reminders").font(.calmBody)
+                        Text("Gentle nudges to hit your water goal").font(.calmCaption2).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.calmBlue)
+                }
+            }
+            .padding(Spacing.lg)
+            .liquidGlass(cornerRadius: CornerRadius.lg)
+            .padding(.horizontal, Spacing.md)
+
+            Spacer()
+
+            Button {
+                Task { await requestNotificationPermission() }
+            } label: {
+                Label(notifPermissionGranted ? "Notifications On — Continue" : "Enable Notifications", systemImage: notifPermissionGranted ? "checkmark.circle.fill" : "bell.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(OnboardingPrimaryButton())
+            .padding(.horizontal, Spacing.xl)
+
+            Button("Skip") {
+                withAnimation { page = 4 }
+            }
+            .font(.calmCaption)
+            .foregroundStyle(.secondary)
+            .padding(.bottom, Spacing.xl)
+        }
+    }
+
+    // MARK: - Page 4: Identity (Apple Sign In or name)
     private var identityPage: some View {
         VStack(spacing: Spacing.lg) {
             Spacer()
 
-            Image(systemName: "person.circle.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(Color.calmBlue)
+            ZStack {
+                Circle()
+                    .fill(Color.calmBlue.opacity(0.12))
+                    .frame(width: 110, height: 110)
+                Image(systemName: "person.circle.fill")
+                    .font(.system(size: 52))
+                    .foregroundStyle(Color.calmBlue)
+                    .symbolRenderingMode(.hierarchical)
+            }
 
             VStack(spacing: Spacing.sm) {
                 Text("What's your name?")
@@ -245,7 +402,7 @@ struct OnboardingView: View {
                     .autocorrectionDisabled()
             }
             .padding(Spacing.md)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: CornerRadius.md))
+            .liquidGlass(cornerRadius: CornerRadius.md)
             .padding(.horizontal, Spacing.xl)
 
             Spacer()
@@ -299,11 +456,24 @@ struct OnboardingView: View {
             try await healthKit.requestAuthorization()
             healthGranted = true
         } catch {
-            // User denied or unavailable — still allow proceeding
             print("HealthKit denied:", error)
         }
         isRequestingHealth = false
         withAnimation { page = 3 }
+    }
+
+    private func requestNotificationPermission() async {
+        do {
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            notifPermissionGranted = granted
+            if granted {
+                UserDefaults.standard.set(true, forKey: "stressAlerts")
+                UserDefaults.standard.set(true, forKey: "hydrationReminders")
+            }
+        } catch {
+            print("Notification permission error:", error)
+        }
+        withAnimation { page = 4 }
     }
 
     private func handleAppleSignIn(_ result: Result<ASAuthorization, Error>) {
@@ -331,7 +501,6 @@ struct OnboardingView: View {
                 let res = try DataExportService.importFromURL(url, context: modelContext)
                 restoreResult    = res
                 showRestoreResult = true
-                // Pre-fill name if restored
                 if let name = UserDefaults.standard.string(forKey: "userName"), !name.isEmpty {
                     nameInput = name
                 }
@@ -347,61 +516,6 @@ struct OnboardingView: View {
         let trimmed = nameInput.trimmingCharacters(in: .whitespaces)
         userName = trimmed.isEmpty ? "there" : trimmed
         onboardingComplete = true
-    }
-}
-
-// MARK: - Reusable page layout
-struct OnboardingPageLayout: View {
-    let icon: String
-    let iconColor: Color
-    let title: String
-    let subtitle: String
-    let footnote: String
-    let buttonTitle: String
-    let buttonAction: () -> Void
-
-    var body: some View {
-        VStack(spacing: Spacing.lg) {
-            Spacer()
-
-            Image(systemName: icon)
-                .font(.system(size: 72))
-                .foregroundStyle(iconColor)
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(spacing: Spacing.sm) {
-                Text(title)
-                    .font(.calmLargeTitle)
-                    .multilineTextAlignment(.center)
-
-                Text(subtitle)
-                    .font(.calmBody)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, Spacing.md)
-            }
-
-            if !footnote.isEmpty {
-                Text(footnote)
-                    .font(.system(size: 11))
-                    .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, Spacing.xl)
-                    .padding(Spacing.md)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: CornerRadius.md))
-                    .padding(.horizontal, Spacing.md)
-            }
-
-            Spacer()
-
-            Button(action: buttonAction) {
-                Text(buttonTitle)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(OnboardingPrimaryButton())
-            .padding(.horizontal, Spacing.xl)
-            .padding(.bottom, Spacing.xl)
-        }
     }
 }
 
@@ -459,4 +573,5 @@ struct OnboardingPrimaryButton: ButtonStyle {
 #Preview {
     OnboardingView()
         .environmentObject(StoreKitService.shared)
+        .modelContainer(for: [HRVReading.self, MoodEntry.self, HydrationEntry.self], inMemory: true)
 }

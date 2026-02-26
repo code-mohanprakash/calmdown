@@ -40,6 +40,11 @@ final class HealthKitService: ObservableObject {
         return types
     }()
 
+    /// Fires every time a new HRV sample arrives from Apple Watch
+    let hrvDidUpdate = PassthroughSubject<Double, Never>()
+
+    private var hrvObserverQuery: HKObserverQuery?
+
     private init() {}
 
     // MARK: - Authorization
@@ -47,6 +52,37 @@ final class HealthKitService: ObservableObject {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         try await store.requestAuthorization(toShare: [], read: readTypes)
         isAuthorized = true
+        startRealtimeHRVObserver()
+    }
+
+    // MARK: - Realtime HRV Observer
+    /// Registers an HKObserverQuery so the app reacts immediately when
+    /// Apple Watch writes a new HRV-SDNN sample — no need to re-open the app.
+    private func startRealtimeHRVObserver() {
+        guard let type = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) else { return }
+
+        // Stop any existing observer first
+        if let existing = hrvObserverQuery { store.stop(existing) }
+
+        let query = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, completionHandler, error in
+            guard error == nil, let self else {
+                completionHandler()
+                return
+            }
+            Task { @MainActor in
+                if let latest = await self.fetchLatestHRV(), latest > 0 {
+                    self.latestHRV = latest
+                    self.hrvDidUpdate.send(latest)
+                }
+                if let hr = await self.fetchLatestHeartRate() { self.latestHeartRate = hr }
+            }
+            completionHandler()
+        }
+        hrvObserverQuery = query
+        store.execute(query)
+
+        // Background delivery: wake app when Watch syncs overnight
+        store.enableBackgroundDelivery(for: type, frequency: .immediate) { _, _ in }
     }
 
     // MARK: - HRV
@@ -136,23 +172,42 @@ final class HealthKitService: ObservableObject {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date())
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
-        return await withCheckedContinuation { continuation in
+        // Step 1: fetch sleep samples
+        let sleepSamples: [HKCategorySample] = await withCheckedContinuation { continuation in
             let query = HKSampleQuery(
                 sampleType: type,
                 predicate: predicate,
                 limit: HKObjectQueryNoLimit,
                 sortDescriptors: [sortDescriptor]
             ) { _, samples, error in
-                guard let samples = samples as? [HKCategorySample], error == nil, !samples.isEmpty else {
-                    continuation.resume(returning: nil)
+                guard let samples = samples as? [HKCategorySample], error == nil else {
+                    continuation.resume(returning: [])
                     return
                 }
-                let total = samples.reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) }
-                let sleepData = SleepData(totalDuration: total)
-                continuation.resume(returning: sleepData)
+                continuation.resume(returning: samples)
             }
             self.store.execute(query)
         }
+
+        guard !sleepSamples.isEmpty else { return nil }
+
+        let total = sleepSamples.reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) }
+        let hours = total / 3600
+        let quality: SleepQuality
+        switch hours {
+        case 8...:  quality = .excellent
+        case 7..<8: quality = .good
+        case 5..<8: quality = .fair
+        default:    quality = .poor
+        }
+
+        // Step 2: fetch heart rate during the actual sleep window
+        let sleepStart = sleepSamples.first!.startDate
+        let sleepEnd   = sleepSamples.last!.endDate
+        let hrSamples  = await fetchHeartRateSamples(from: sleepStart, to: sleepEnd)
+        let avgHR: Double = hrSamples.isEmpty ? 0 : hrSamples.map(\.1).reduce(0, +) / Double(hrSamples.count)
+
+        return SleepData(totalDuration: total, averageHeartRate: avgHR, quality: quality)
     }
 
     // MARK: - Fitness

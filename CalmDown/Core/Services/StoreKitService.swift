@@ -6,7 +6,7 @@ final class StoreKitService: ObservableObject {
     static let shared = StoreKitService()
 
     @Published var products: [Product] = []
-    @Published var isPremium: Bool = false
+    @Published var isPremium: Bool = true
     @Published var isLoading  = false
 
     private let productIDs: Set<String> = [
@@ -80,14 +80,8 @@ final class StoreKitService: ObservableObject {
     }
 
     private func updatePurchasedProducts() async {
-        for await result in Transaction.currentEntitlements {
-            guard case .verified(let transaction) = result else { continue }
-            if transaction.revocationDate == nil {
-                isPremium = true
-                return
-            }
-        }
-        isPremium = false
+        // App is fully free — all features unlocked for everyone
+        isPremium = true
     }
 
     nonisolated private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
